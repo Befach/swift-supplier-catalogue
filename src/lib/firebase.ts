@@ -1,12 +1,13 @@
 // Firebase configuration (using environment variables for production)
 // For demo purposes, we'll use placeholder values
 export const firebaseConfig = {
-  apiKey: "demo-api-key",
-  authDomain: "supplier-management-demo.firebaseapp.com",
-  projectId: "supplier-management-demo",
-  storageBucket: "supplier-management-demo.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "demo-app-id"
+  apiKey: "AIzaSyAo5_sSq75D2gmwy1lDYlrUsWGlHCWxrk8",
+  authDomain: "supplier-befach.firebaseapp.com",
+  projectId: "supplier-befach",
+  storageBucket: "supplier-befach.firebasestorage.app",
+  messagingSenderId: "933528813253",
+  appId: "1:933528813253:web:6bebeb792224580f857aac"
+
 };
 
 // Mock Firebase implementation for demo
