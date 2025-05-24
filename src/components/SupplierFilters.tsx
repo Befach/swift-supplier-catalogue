@@ -63,14 +63,14 @@ export const SupplierFilters: React.FC<SupplierFiltersProps> = ({
         <div>
           <label className="text-sm font-medium mb-2 block">City</label>
           <Select 
-            value={filters.city || ''} 
-            onValueChange={(value) => onFiltersChange({ city: value || undefined })}
+            value={filters.city || 'all'} 
+            onValueChange={(value) => onFiltersChange({ city: value === 'all' ? undefined : value })}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select city" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Cities</SelectItem>
+              <SelectItem value="all">All Cities</SelectItem>
               {CITIES.map(city => (
                 <SelectItem key={city} value={city}>{city}</SelectItem>
               ))}
