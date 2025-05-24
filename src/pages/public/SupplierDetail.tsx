@@ -6,6 +6,7 @@ import { PublicNavbar } from '@/components/PublicNavbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { db } from '@/lib/firebase';
+import { MapPin, Clock, Mail, Phone, Globe, ArrowRight } from 'lucide-react';
 
 const SupplierDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -18,19 +19,16 @@ const SupplierDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-white">
         <PublicNavbar />
         <div className="container mx-auto px-4 py-8">
           <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
-            <div className="h-6 bg-gray-200 rounded w-1/6 mb-8"></div>
-            <div className="bg-white rounded-lg p-8">
-              <div className="h-24 bg-gray-200 rounded mb-6"></div>
-              <div className="space-y-4">
-                <div className="h-4 bg-gray-200 rounded"></div>
-                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-              </div>
+            <div className="h-6 bg-gray-200 rounded w-1/3 mb-6"></div>
+            <div className="w-full h-64 bg-gray-200 rounded-lg mb-8"></div>
+            <div className="h-8 bg-gray-200 rounded w-1/2 mb-4"></div>
+            <div className="space-y-2 mb-6">
+              <div className="h-4 bg-gray-200 rounded"></div>
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
             </div>
           </div>
         </div>
@@ -40,148 +38,235 @@ const SupplierDetail = () => {
 
   if (error || !supplier) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-white">
         <PublicNavbar />
         <div className="container mx-auto px-4 py-8 text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Supplier Not Found</h1>
           <p className="text-gray-600 mb-6">
             The supplier you're looking for doesn't exist or has been removed.
           </p>
-          <Link to="/catalogue">
-            <Button>Browse All Suppliers</Button>
+          <Link to="/">
+            <Button className="bg-orange-500 hover:bg-orange-600">Browse All Suppliers</Button>
           </Link>
         </div>
       </div>
     );
   }
 
+  const keyProducts = [
+    {
+      title: "Biodegradable Packaging",
+      description: "Fully compostable packaging solutions made from plant-based materials."
+    },
+    {
+      title: "Recycled Paper Products", 
+      description: "High-quality paper products made from 100% post-consumer recycled materials."
+    },
+    {
+      title: "Sustainable Raw Materials",
+      description: "Eco-friendly raw materials sourced from renewable and sustainable sources."
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <PublicNavbar />
       
       <div className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
-        <nav className="mb-6">
+        <nav className="mb-8">
           <div className="flex items-center space-x-2 text-sm text-gray-600">
-            <Link to="/" className="hover:text-blue-600">Home</Link>
-            <span>/</span>
-            <Link to="/catalogue" className="hover:text-blue-600">Suppliers</Link>
-            <span>/</span>
+            <Link to="/" className="hover:text-orange-500">Home</Link>
+            <ArrowRight className="w-4 h-4" />
+            <Link to="/" className="hover:text-orange-500">Suppliers</Link>
+            <ArrowRight className="w-4 h-4" />
             <span className="text-gray-900">{supplier.name}</span>
           </div>
         </nav>
 
+        {/* Hero Image */}
+        <div className="w-full h-64 bg-gray-200 rounded-lg mb-8 flex items-center justify-center">
+          {supplier.logo_url ? (
+            <img
+              src={supplier.logo_url}
+              alt={supplier.name}
+              className="w-full h-full object-cover rounded-lg"
+            />
+          ) : (
+            <div className="text-gray-400 text-6xl">🏢</div>
+          )}
+        </div>
+
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <div className="flex items-start space-x-4">
-                  {supplier.logo_url ? (
-                    <img
-                      src={supplier.logo_url}
-                      alt={supplier.name}
-                      className="w-20 h-20 rounded-lg object-cover"
-                    />
-                  ) : (
-                    <div className="w-20 h-20 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <span className="text-blue-600 font-bold text-2xl">
-                        {supplier.name.charAt(0)}
-                      </span>
-                    </div>
-                  )}
-                  <div>
-                    <CardTitle className="text-2xl">{supplier.name}</CardTitle>
-                    {supplier.city && (
-                      <p className="text-gray-600">{supplier.city}</p>
-                    )}
-                    {supplier.categories.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {supplier.categories.map(category => (
-                          <span
-                            key={category}
-                            className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
-                          >
-                            {category}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </CardHeader>
+            <div className="mb-6">
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">{supplier.name}</h1>
               
-              <CardContent>
-                {supplier.description && (
-                  <div className="mb-6">
-                    <h3 className="text-lg font-semibold mb-2">About</h3>
-                    <p className="text-gray-700 leading-relaxed">{supplier.description}</p>
+              <div className="flex flex-wrap items-center gap-6 mb-6">
+                {supplier.city && (
+                  <div className="flex items-center text-gray-600">
+                    <MapPin className="w-5 h-5 mr-2" />
+                    <span>{supplier.city}</span>
                   </div>
                 )}
-              </CardContent>
-            </Card>
+                <div className="flex items-center text-gray-600">
+                  <Clock className="w-5 h-5 mr-2" />
+                  <span>5 years partnership</span>
+                </div>
+              </div>
+
+              {supplier.categories.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {supplier.categories.map(category => (
+                    <span
+                      key={category}
+                      className="px-3 py-1 bg-white border border-gray-300 text-gray-700 text-sm rounded-full"
+                    >
+                      {category}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {supplier.description && (
+              <div className="mb-8">
+                <p className="text-gray-700 leading-relaxed text-lg">{supplier.description}</p>
+                <p className="text-gray-700 leading-relaxed mt-4">
+                  EcoGreen Materials leads the industry in sustainable packaging solutions and eco-friendly raw materials. Our 
+                  innovative products help businesses reduce their environmental footprint while maintaining product quality and 
+                  integrity. We source materials from sustainable forests and recycled sources, ensuring a fully transparent supply 
+                  chain. With over 5 years of dedicated partnership, we've helped hundreds of businesses transition to more 
+                  sustainable packaging options without compromising on quality or aesthetics. Our team of sustainability experts is 
+                  always available to consult on your specific needs.
+                </p>
+              </div>
+            )}
+
+            {/* Key Products & Services */}
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Key Products & Services</h2>
+              <div className="grid md:grid-cols-3 gap-6">
+                {keyProducts.map((product, index) => (
+                  <Card key={index} className="border border-gray-200">
+                    <CardHeader className="pb-4">
+                      <div className="w-full h-32 bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
+                        <div className="text-gray-400 text-3xl">📦</div>
+                      </div>
+                      <CardTitle className="text-lg">{product.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-gray-600 text-sm">{product.description}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Contact Sidebar */}
           <div>
-            <Card>
+            <Card className="border border-gray-200">
               <CardHeader>
-                <CardTitle>Contact Information</CardTitle>
+                <CardTitle className="text-xl">Contact Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {supplier.email && (
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Email</label>
-                    <p className="text-gray-900">
+                  <div className="flex items-center">
+                    <Mail className="w-5 h-5 text-orange-500 mr-3" />
+                    <div>
                       <a 
                         href={`mailto:${supplier.email}`}
-                        className="text-blue-600 hover:text-blue-800 underline"
+                        className="text-orange-500 hover:text-orange-600 underline"
                       >
                         {supplier.email}
                       </a>
-                    </p>
+                    </div>
                   </div>
                 )}
                 
                 {supplier.phone && (
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Phone</label>
-                    <p className="text-gray-900">
+                  <div className="flex items-center">
+                    <Phone className="w-5 h-5 text-orange-500 mr-3" />
+                    <div>
                       <a 
                         href={`tel:${supplier.phone}`}
-                        className="text-blue-600 hover:text-blue-800 underline"
+                        className="text-orange-500 hover:text-orange-600 underline"
                       >
                         {supplier.phone}
                       </a>
-                    </p>
+                    </div>
                   </div>
                 )}
                 
                 {supplier.website && (
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Website</label>
-                    <p className="text-gray-900">
+                  <div className="flex items-center">
+                    <Globe className="w-5 h-5 text-orange-500 mr-3" />
+                    <div>
                       <a 
                         href={supplier.website}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 underline"
+                        className="text-orange-500 hover:text-orange-600 underline"
                       >
-                        Visit Website
+                        www.ecogreen-materials.example
                       </a>
-                    </p>
+                    </div>
                   </div>
                 )}
                 
+                <div className="flex items-start">
+                  <MapPin className="w-5 h-5 text-orange-500 mr-3 mt-0.5" />
+                  <div className="text-gray-700">
+                    123 Sustainability Ave, Portland, OR 97201
+                  </div>
+                </div>
+                
                 <div className="pt-4">
-                  <Button className="w-full" size="lg">
-                    Contact Supplier
+                  <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white" size="lg">
+                    Contact This Supplier
                   </Button>
                 </div>
               </CardContent>
             </Card>
           </div>
         </div>
+
+        {/* Footer */}
+        <footer className="mt-16 pt-12 border-t border-gray-200">
+          <div className="grid md:grid-cols-3 gap-8 mb-8">
+            <div>
+              <h3 className="font-bold text-gray-900 mb-4">Supplier Directory</h3>
+              <p className="text-gray-600 text-sm">
+                Find trusted suppliers for your business needs. Our directory features quality partners that help deliver excellence.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-bold text-gray-900 mb-4">Quick Links</h3>
+              <div className="space-y-2">
+                <Link to="/" className="block text-gray-600 hover:text-orange-500 text-sm">Home</Link>
+                <Link to="/about" className="block text-gray-600 hover:text-orange-500 text-sm">About Us</Link>
+                <Link to="/contact" className="block text-gray-600 hover:text-orange-500 text-sm">Contact</Link>
+                <Link to="/privacy" className="block text-gray-600 hover:text-orange-500 text-sm">Privacy Policy</Link>
+              </div>
+            </div>
+            <div>
+              <h3 className="font-bold text-gray-900 mb-4">Contact Us</h3>
+              <div className="space-y-2 text-sm text-gray-600">
+                <p>123 Business Avenue</p>
+                <p>Suite 456</p>
+                <p>San Francisco, CA 94107</p>
+                <a href="mailto:info@supplierdirectory.example" className="text-orange-500 hover:text-orange-600">
+                  info@supplierdirectory.example
+                </a>
+              </div>
+            </div>
+          </div>
+          <div className="text-center text-sm text-gray-500 pt-8 border-t border-gray-200">
+            © 2025 Supplier Directory. All rights reserved.
+          </div>
+        </footer>
       </div>
     </div>
   );

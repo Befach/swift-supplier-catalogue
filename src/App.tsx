@@ -9,7 +9,6 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 
 // Public pages
 import Homepage from "./pages/public/Homepage";
-import Catalogue from "./pages/public/Catalogue";
 import SupplierDetail from "./pages/public/SupplierDetail";
 
 // Admin pages
@@ -39,7 +38,6 @@ const App = () => (
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<Homepage />} />
-            <Route path="/catalogue" element={<Catalogue />} />
             <Route path="/supplier/:slug" element={<SupplierDetail />} />
             
             {/* Admin routes */}
