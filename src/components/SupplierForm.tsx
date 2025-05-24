@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Supplier } from '@/types/supplier';
+import { X, Plus } from 'lucide-react';
 
 interface SupplierFormProps {
   initialData?: Partial<Supplier>;
@@ -30,6 +30,9 @@ export const SupplierForm: React.FC<SupplierFormProps> = ({
     logo_url: initialData?.logo_url || ''
   });
 
+  const [products, setProducts] = useState<string[]>(initialData?.products || []);
+  const [newProduct, setNewProduct] = useState('');
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -40,12 +43,24 @@ export const SupplierForm: React.FC<SupplierFormProps> = ({
 
     onSubmit({
       ...formData,
-      categories
+      categories,
+      products: products.filter(product => product.trim().length > 0)
     });
   };
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const addProduct = () => {
+    if (newProduct.trim() && !products.includes(newProduct.trim())) {
+      setProducts([...products, newProduct.trim()]);
+      setNewProduct('');
+    }
+  };
+
+  const removeProduct = (index: number) => {
+    setProducts(products.filter((_, i) => i !== index));
   };
 
   return (
@@ -126,6 +141,40 @@ export const SupplierForm: React.FC<SupplierFormProps> = ({
           onChange={(e) => handleChange('categories', e.target.value)}
           placeholder="Technology, Software, Consulting (comma separated)"
         />
+      </div>
+
+      <div>
+        <Label htmlFor="products">Products & Services</Label>
+        <div className="space-y-2">
+          <div className="flex gap-2">
+            <Input
+              value={newProduct}
+              onChange={(e) => setNewProduct(e.target.value)}
+              placeholder="Add a product or service..."
+              onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addProduct())}
+            />
+            <Button type="button" onClick={addProduct} size="sm">
+              <Plus className="w-4 h-4" />
+            </Button>
+          </div>
+          {products.length > 0 && (
+            <div className="space-y-1">
+              {products.map((product, index) => (
+                <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded">
+                  <span className="flex-1 text-sm">{product}</span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => removeProduct(index)}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <div>

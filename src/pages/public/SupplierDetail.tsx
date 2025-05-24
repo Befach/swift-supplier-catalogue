@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -145,24 +144,23 @@ const SupplierDetail = () => {
             )}
 
             {/* Key Products & Services */}
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Key Products & Services</h2>
-              <div className="grid md:grid-cols-3 gap-6">
-                {keyProducts.map((product, index) => (
-                  <Card key={index} className="border border-gray-200">
-                    <CardHeader className="pb-4">
-                      <div className="w-full h-32 bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
-                        <div className="text-gray-400 text-3xl">📦</div>
-                      </div>
-                      <CardTitle className="text-lg">{product.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-gray-600 text-sm">{product.description}</p>
-                    </CardContent>
-                  </Card>
-                ))}
+            {supplier.products && supplier.products.length > 0 && (
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Key Products & Services</h2>
+                <Card className="border border-gray-200">
+                  <CardContent className="pt-6">
+                    <ul className="space-y-3">
+                      {supplier.products.map((product, index) => (
+                        <li key={index} className="flex items-start">
+                          <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                          <span className="text-gray-700 leading-relaxed">{product}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Contact Sidebar */}

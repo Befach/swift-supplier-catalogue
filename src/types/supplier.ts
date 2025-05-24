@@ -10,6 +10,7 @@ export interface Supplier {
   categories: string[];
   logo_url?: string;
   slug: string;
+  products?: string[];
   created_at: Date;
   updated_at: Date;
 }

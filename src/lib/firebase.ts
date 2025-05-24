@@ -1,4 +1,3 @@
-
 // Firebase configuration (using environment variables for production)
 // For demo purposes, we'll use placeholder values
 export const firebaseConfig = {
@@ -24,6 +23,11 @@ export class MockFirestore {
       categories: ["Packaging", "Raw Materials", "Sustainable Products"],
       logo_url: "",
       slug: "ecogreen-materials",
+      products: [
+        "Fully compostable packaging solutions made from plant-based materials",
+        "High-quality paper products made from 100% post-consumer recycled materials",
+        "Eco-friendly raw materials sourced from renewable and sustainable sources"
+      ],
       created_at: new Date("2024-01-15"),
       updated_at: new Date("2024-01-15")
     },
@@ -38,6 +42,11 @@ export class MockFirestore {
       categories: ["Electronics", "Manufacturing"],
       logo_url: "",
       slug: "techparts-international",
+      products: [
+        "High-performance microprocessors and integrated circuits",
+        "Precision-engineered connectors and cables",
+        "Custom PCB design and manufacturing services"
+      ],
       created_at: new Date("2024-01-20"),
       updated_at: new Date("2024-01-20")
     },
@@ -52,6 +61,11 @@ export class MockFirestore {
       categories: ["Textiles", "Fabrics"],
       logo_url: "",
       slug: "globaltextiles-co",
+      products: [
+        "Premium organic cotton fabrics",
+        "Sustainable bamboo textile products",
+        "Custom fabric dyeing and printing services"
+      ],
       created_at: new Date("2024-02-01"),
       updated_at: new Date("2024-02-01")
     },
@@ -66,6 +80,11 @@ export class MockFirestore {
       categories: ["Manufacturing", "Raw Materials"],
       logo_url: "",
       slug: "precision-metals",
+      products: [
+        "CNC machined aluminum and steel components",
+        "Custom metal fabrication and welding services",
+        "High-grade alloy materials for aerospace applications"
+      ],
       created_at: new Date("2024-02-10"),
       updated_at: new Date("2024-02-10")
     },
@@ -80,6 +99,11 @@ export class MockFirestore {
       categories: ["Food", "Organic", "Agriculture"],
       logo_url: "",
       slug: "organic-harvest",
+      products: [
+        "Certified organic grains and cereals",
+        "Fresh organic vegetables and herbs",
+        "Organic dairy products and free-range eggs"
+      ],
       created_at: new Date("2024-02-15"),
       updated_at: new Date("2024-02-15")
     },
@@ -94,6 +118,11 @@ export class MockFirestore {
       categories: ["Manufacturing", "Raw Materials"],
       logo_url: "",
       slug: "chemtech-solutions",
+      products: [
+        "Industrial-grade chemical compounds and solvents",
+        "Laboratory reagents and analytical standards",
+        "Custom chemical synthesis and formulation services"
+      ],
       created_at: new Date("2024-02-20"),
       updated_at: new Date("2024-02-20")
     }
