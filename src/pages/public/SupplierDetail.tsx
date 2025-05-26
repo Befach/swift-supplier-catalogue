@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -282,9 +283,8 @@ const SupplierDetail = () => {
             <div>
               <h3 className="font-bold text-gray-900 mb-4">Contact Us</h3>
               <div className="space-y-2 text-sm text-gray-600">
-                <p>3rd Road Number 2 Venkat Nagar Banjara Hills</p>
-                <p>3rd floor, Luxor Park</p>
-                <p>500034 Hyderabad TS, India</p>
+                <p>3rd floor, Luxor Park, Road No.2 Banjara Hills</p>
+                <p>Hyderabad, Telangana, 500034</p>
                 <a href="mailto:sales@befach.com" className="text-orange-500 hover:text-orange-600">
                   sales@befach.com
                 </a>
@@ -302,3 +302,4 @@ const SupplierDetail = () => {
 };
 
 export default SupplierDetail;
+
