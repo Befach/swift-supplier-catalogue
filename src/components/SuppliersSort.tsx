@@ -34,11 +34,11 @@ export const SuppliersSort: React.FC<SuppliersSortProps> = ({
   };
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4">
-      <div className="flex items-center gap-4">
-        <span className="text-sm text-gray-600">Sort by:</span>
+    <div className="flex flex-col gap-3 sm:gap-0 sm:flex-row sm:items-center sm:justify-between py-3 sm:py-4">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+        <span className="text-sm font-medium text-gray-600">Sort by:</span>
         <Select value={sortBy} onValueChange={onSortChange}>
-          <SelectTrigger className="w-48">
+          <SelectTrigger className="w-full sm:w-48 h-10">
             <SelectValue placeholder="Select sort option" />
           </SelectTrigger>
           <SelectContent>
@@ -52,8 +52,8 @@ export const SuppliersSort: React.FC<SuppliersSortProps> = ({
         </Select>
       </div>
       
-      <div className="text-sm text-gray-600">
-        {totalItems} suppliers
+      <div className="text-sm text-gray-600 text-center sm:text-right">
+        <span className="font-medium">{totalItems}</span> suppliers found
       </div>
     </div>
   );

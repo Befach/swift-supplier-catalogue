@@ -90,38 +90,38 @@ const Homepage = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <PublicNavbar />
       
-      {/* Hero Section */}
-      <section className="bg-white py-12 sm:py-16">
+      {/* Hero Section - Improved mobile spacing */}
+      <section className="bg-white py-8 sm:py-12 lg:py-16">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 leading-tight">
             Our Trusted Suppliers
           </h1>
-          <p className="text-base sm:text-lg text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base lg:text-lg text-gray-600 mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed">
             Quality partners that help us deliver excellence across the globe
           </p>
           
-          {/* Search Bar */}
-          <div className="relative max-w-xl mx-auto mb-8">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          {/* Search Bar - Better mobile sizing */}
+          <div className="relative max-w-xl mx-auto mb-6 sm:mb-8">
+            <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
             <Input
-              placeholder="Search suppliers by name, category, or location..."
+              placeholder="Search suppliers..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12 py-3 text-base border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              className="pl-10 sm:pl-12 py-2.5 sm:py-3 text-sm sm:text-base border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
             />
           </div>
         </div>
       </section>
 
-      {/* Category Filters */}
-      <section className="bg-white py-6 border-b border-gray-100">
+      {/* Category Filters - Improved mobile layout */}
+      <section className="bg-white py-4 sm:py-6 border-b border-gray-100">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
+          <div className="flex flex-wrap gap-2 justify-center">
             {categories.map(category => (
               <button
                 key={category}
                 onClick={() => setActiveCategory(category)}
-                className={`px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 ${
+                className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap ${
                   activeCategory === category
                     ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/25'
                     : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:border-gray-300'
@@ -134,7 +134,7 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* Sort Controls */}
+      {/* Sort Controls - Better mobile display */}
       <section className="bg-white border-b border-gray-100">
         <div className="container mx-auto px-4">
           <SuppliersSort
@@ -145,26 +145,26 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* Suppliers Grid */}
-      <section className="py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-gray-50 to-white">
+      {/* Suppliers Grid - Optimized for mobile */}
+      <section className="py-6 sm:py-8 lg:py-12 bg-gradient-to-br from-gray-50 to-white">
         <div className="container mx-auto px-4">
           {isDataLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
                 <SupplierSkeleton key={i} />
               ))}
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {paginatedSuppliers.map((supplier: Supplier) => (
                   <Link 
                     key={supplier.id} 
                     to={`/supplier/${supplier.slug}`}
-                    className="block group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-300 overflow-hidden cursor-pointer"
+                    className="block group bg-white rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-300 overflow-hidden cursor-pointer"
                   >
-                    {/* Image Container */}
-                    <div className="relative w-full h-40 sm:h-48 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+                    {/* Image Container - Better mobile aspect ratio */}
+                    <div className="relative w-full h-36 sm:h-40 lg:h-48 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
                       {supplier.logo_url ? (
                         <img 
                           src={supplier.logo_url} 
@@ -173,16 +173,16 @@ const Homepage = () => {
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
-                          <div className="text-gray-400 text-4xl sm:text-5xl">📦</div>
+                          <div className="text-gray-400 text-3xl sm:text-4xl lg:text-5xl">📦</div>
                         </div>
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </div>
                     
-                    <div className="p-4 sm:p-6">
-                      {/* Header */}
+                    <div className="p-4 sm:p-5 lg:p-6">
+                      {/* Header - Better mobile typography */}
                       <div className="mb-3">
-                        <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-1 line-clamp-1 group-hover:text-orange-600 transition-colors duration-200">
+                        <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-1 line-clamp-1 group-hover:text-orange-600 transition-colors duration-200">
                           {supplier.name}
                         </h3>
                         
@@ -194,16 +194,16 @@ const Homepage = () => {
                         )}
                       </div>
                       
-                      {/* Description */}
+                      {/* Description - Better mobile readability */}
                       {supplier.description && (
-                        <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-2">
+                        <p className="text-gray-600 text-sm leading-relaxed mb-3 sm:mb-4 line-clamp-2">
                           {supplier.description}
                         </p>
                       )}
                       
-                      {/* Category Tags */}
+                      {/* Category Tags - Improved mobile layout */}
                       {supplier.categories.length > 0 && (
-                        <div className="flex flex-wrap gap-1 sm:gap-2 mb-4">
+                        <div className="flex flex-wrap gap-1 sm:gap-2 mb-3 sm:mb-4">
                           {supplier.categories.slice(0, 2).map(category => (
                             <span
                               key={category}
@@ -221,14 +221,14 @@ const Homepage = () => {
                       )}
                       
                       {/* Partnership Duration */}
-                      <div className="flex items-center text-gray-500 mb-6">
+                      <div className="flex items-center text-gray-500 mb-4 sm:mb-6">
                         <Clock className="w-3 h-3 sm:w-4 sm:h-4 mr-2 flex-shrink-0" />
                         <span className="text-xs sm:text-sm">Exporting from {supplier.partnership_years || 5} years</span>
                       </div>
                       
-                      {/* CTA Button - now just for visual indication */}
-                      <div className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 sm:py-3 rounded-xl shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all duration-200 group flex items-center justify-center">
-                        View Details 
+                      {/* CTA Button - Better mobile touch target */}
+                      <div className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 sm:py-3 rounded-xl shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all duration-200 group flex items-center justify-center min-h-[44px]">
+                        <span className="text-sm sm:text-base">View Details</span>
                         <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
                       </div>
                     </div>
@@ -249,17 +249,18 @@ const Homepage = () => {
             </>
           )}
           
+          {/* Empty State - Better mobile layout */}
           {!isDataLoading && filteredAndSortedSuppliers.length === 0 && (
-            <div className="text-center py-16">
-              <div className="text-gray-400 text-6xl mb-4">🔍</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No suppliers found</h3>
-              <p className="text-gray-600 mb-6">Try adjusting your search criteria or browse all suppliers.</p>
+            <div className="text-center py-12 sm:py-16">
+              <div className="text-gray-400 text-5xl sm:text-6xl mb-4">🔍</div>
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">No suppliers found</h3>
+              <p className="text-gray-600 mb-6 text-sm sm:text-base px-4">Try adjusting your search criteria or browse all suppliers.</p>
               <button
                 onClick={() => {
                   setSearchTerm('');
                   setActiveCategory('All Suppliers');
                 }}
-                className="inline-flex items-center px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors duration-200"
+                className="inline-flex items-center px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors duration-200 min-h-[44px]"
               >
                 Clear all filters
               </button>
