@@ -68,7 +68,7 @@ export const SupplierCard: React.FC<SupplierCardProps> = ({ supplier }) => {
         {supplier.partnership_years && (
           <div className="flex items-center text-gray-600 mb-4">
             <Clock className="w-4 h-4 mr-2" />
-            <span className="text-sm">{supplier.partnership_years} years partnership</span>
+            <span className="text-sm">Exporting from {supplier.partnership_years} years</span>
           </div>
         )}
         

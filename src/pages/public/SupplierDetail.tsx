@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -124,7 +123,7 @@ const SupplierDetail = () => {
                 {supplier.partnership_years && (
                   <div className="flex items-center text-gray-600">
                     <Clock className="w-5 h-5 mr-2" />
-                    <span>{supplier.partnership_years} years partnership</span>
+                    <span>Exporting from {supplier.partnership_years} years</span>
                   </div>
                 )}
               </div>
