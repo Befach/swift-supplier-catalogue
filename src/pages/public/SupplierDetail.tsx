@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -29,6 +30,10 @@ const SupplierDetail = () => {
       window.open(supplier.catalogue_file_url, '_blank');
     }
   };
+
+  console.log('Supplier data:', supplier);
+  console.log('Catalogue button text:', supplier?.catalogue_button);
+  console.log('Catalogue file URL:', supplier?.catalogue_file_url);
 
   if (isLoading) {
     return (
