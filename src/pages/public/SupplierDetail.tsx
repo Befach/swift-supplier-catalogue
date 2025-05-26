@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -252,7 +251,7 @@ const SupplierDetail = () => {
                       onClick={handleCatalogueDownload}
                     >
                       <FileText className="w-4 h-4 mr-2" />
-                      {supplier.catalogue_button || `Download "${supplier.name}" Catalogue`}
+                      Download "{supplier.name}" Catalogue
                     </Button>
                   )}
                 </div>
