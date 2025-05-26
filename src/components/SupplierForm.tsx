@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,7 +28,9 @@ export const SupplierForm: React.FC<SupplierFormProps> = ({
     description: initialData?.description || '',
     city: initialData?.city || '',
     categories: initialData?.categories?.join(', ') || '',
-    logo_url: initialData?.logo_url || ''
+    logo_url: initialData?.logo_url || '',
+    partnership_years: initialData?.partnership_years || 10,
+    catalogue_button: initialData?.catalogue_button || ''
   });
 
   const [products, setProducts] = useState<string[]>(initialData?.products || []);
@@ -48,7 +51,7 @@ export const SupplierForm: React.FC<SupplierFormProps> = ({
     });
   };
 
-  const handleChange = (field: string, value: string) => {
+  const handleChange = (field: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -131,6 +134,30 @@ export const SupplierForm: React.FC<SupplierFormProps> = ({
           onChange={(e) => handleChange('logo_url', e.target.value)}
           placeholder="https://example.com/logo.jpg"
         />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="partnership_years">Partnership Duration (Years)</Label>
+          <Input
+            id="partnership_years"
+            type="number"
+            value={formData.partnership_years}
+            onChange={(e) => handleChange('partnership_years', parseInt(e.target.value) || 10)}
+            placeholder="10"
+            min="1"
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="catalogue_button">Catalogue Button Text</Label>
+          <Input
+            id="catalogue_button"
+            value={formData.catalogue_button}
+            onChange={(e) => handleChange('catalogue_button', e.target.value)}
+            placeholder="Download Catalogue"
+          />
+        </div>
       </div>
 
       <div>

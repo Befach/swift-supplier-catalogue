@@ -11,6 +11,8 @@ export interface Supplier {
   logo_url?: string;
   slug: string;
   products?: string[];
+  partnership_years?: number;
+  catalogue_button?: string;
   created_at: Date;
   updated_at: Date;
 }
@@ -31,4 +33,6 @@ export interface CSVSupplier {
   description?: string;
   city?: string;
   categories?: string;
+  partnership_years?: number;
+  catalogue_button?: string;
 }

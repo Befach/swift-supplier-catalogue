@@ -29,6 +29,8 @@ export class MockFirestore {
         "High-quality paper products made from 100% post-consumer recycled materials",
         "Eco-friendly raw materials sourced from renewable and sustainable sources"
       ],
+      partnership_years: 10,
+      catalogue_button: "Download EcoGreen Catalogue",
       created_at: new Date("2024-01-15"),
       updated_at: new Date("2024-01-15")
     },
@@ -48,6 +50,8 @@ export class MockFirestore {
         "Precision-engineered connectors and cables",
         "Custom PCB design and manufacturing services"
       ],
+      partnership_years: 10,
+      catalogue_button: "View Product Catalogue",
       created_at: new Date("2024-01-20"),
       updated_at: new Date("2024-01-20")
     },
@@ -67,6 +71,8 @@ export class MockFirestore {
         "Sustainable bamboo textile products",
         "Custom fabric dyeing and printing services"
       ],
+      partnership_years: 10,
+      catalogue_button: "Browse Textile Catalogue",
       created_at: new Date("2024-02-01"),
       updated_at: new Date("2024-02-01")
     },
@@ -86,6 +92,8 @@ export class MockFirestore {
         "Custom metal fabrication and welding services",
         "High-grade alloy materials for aerospace applications"
       ],
+      partnership_years: 10,
+      catalogue_button: "Metal Products Catalogue",
       created_at: new Date("2024-02-10"),
       updated_at: new Date("2024-02-10")
     },
@@ -105,6 +113,8 @@ export class MockFirestore {
         "Fresh organic vegetables and herbs",
         "Organic dairy products and free-range eggs"
       ],
+      partnership_years: 10,
+      catalogue_button: "Organic Products Catalogue",
       created_at: new Date("2024-02-15"),
       updated_at: new Date("2024-02-15")
     },
@@ -124,6 +134,8 @@ export class MockFirestore {
         "Laboratory reagents and analytical standards",
         "Custom chemical synthesis and formulation services"
       ],
+      partnership_years: 10,
+      catalogue_button: "Chemical Products Catalogue",
       created_at: new Date("2024-02-20"),
       updated_at: new Date("2024-02-20")
     }
@@ -163,6 +175,7 @@ export class MockFirestore {
       ...supplier,
       id: Date.now().toString(),
       slug: supplier.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      partnership_years: supplier.partnership_years || 10,
       created_at: new Date(),
       updated_at: new Date()
     };
@@ -197,6 +210,7 @@ export class MockFirestore {
       ...supplier,
       id: Date.now().toString() + Math.random(),
       slug: supplier.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      partnership_years: supplier.partnership_years || 10,
       created_at: new Date(),
       updated_at: new Date()
     }));

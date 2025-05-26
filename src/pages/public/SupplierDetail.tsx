@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -5,7 +6,7 @@ import { PublicNavbar } from '@/components/PublicNavbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { db } from '@/lib/firebase';
-import { MapPin, Clock, Mail, Phone, Globe, ArrowRight } from 'lucide-react';
+import { MapPin, Clock, Mail, Phone, Globe, ArrowRight, FileText } from 'lucide-react';
 
 const SupplierDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -52,21 +53,6 @@ const SupplierDetail = () => {
     );
   }
 
-  const keyProducts = [
-    {
-      title: "Biodegradable Packaging",
-      description: "Fully compostable packaging solutions made from plant-based materials."
-    },
-    {
-      title: "Recycled Paper Products", 
-      description: "High-quality paper products made from 100% post-consumer recycled materials."
-    },
-    {
-      title: "Sustainable Raw Materials",
-      description: "Eco-friendly raw materials sourced from renewable and sustainable sources."
-    }
-  ];
-
   return (
     <div className="min-h-screen bg-white">
       <PublicNavbar />
@@ -109,10 +95,12 @@ const SupplierDetail = () => {
                     <span>{supplier.city}</span>
                   </div>
                 )}
-                <div className="flex items-center text-gray-600">
-                  <Clock className="w-5 h-5 mr-2" />
-                  <span>5 years partnership</span>
-                </div>
+                {supplier.partnership_years && (
+                  <div className="flex items-center text-gray-600">
+                    <Clock className="w-5 h-5 mr-2" />
+                    <span>{supplier.partnership_years} years partnership</span>
+                  </div>
+                )}
               </div>
 
               {supplier.categories.length > 0 && (
@@ -133,11 +121,11 @@ const SupplierDetail = () => {
               <div className="mb-8">
                 <p className="text-gray-700 leading-relaxed text-lg">{supplier.description}</p>
                 <p className="text-gray-700 leading-relaxed mt-4">
-                  EcoGreen Materials leads the industry in sustainable packaging solutions and eco-friendly raw materials. Our 
-                  innovative products help businesses reduce their environmental footprint while maintaining product quality and 
-                  integrity. We source materials from sustainable forests and recycled sources, ensuring a fully transparent supply 
-                  chain. With over 5 years of dedicated partnership, we've helped hundreds of businesses transition to more 
-                  sustainable packaging options without compromising on quality or aesthetics. Our team of sustainability experts is 
+                  {supplier.name} leads the industry in sustainable solutions and high-quality products. Our 
+                  innovative offerings help businesses achieve their goals while maintaining excellence and 
+                  integrity. We source materials from trusted suppliers and ensure a fully transparent supply 
+                  chain. With over {supplier.partnership_years || 10} years of dedicated partnership, we've helped hundreds of businesses 
+                  transition to better solutions without compromising on quality or efficiency. Our team of experts is 
                   always available to consult on your specific needs.
                 </p>
               </div>
@@ -208,7 +196,7 @@ const SupplierDetail = () => {
                         rel="noopener noreferrer"
                         className="text-orange-500 hover:text-orange-600 underline"
                       >
-                        www.ecogreen-materials.example
+                        {supplier.website.replace('https://', '').replace('http://', '')}
                       </a>
                     </div>
                   </div>
@@ -217,14 +205,25 @@ const SupplierDetail = () => {
                 <div className="flex items-start">
                   <MapPin className="w-5 h-5 text-orange-500 mr-3 mt-0.5" />
                   <div className="text-gray-700">
-                    123 Sustainability Ave, Portland, OR 97201
+                    {supplier.city || 'Location not specified'}
                   </div>
                 </div>
                 
-                <div className="pt-4">
+                <div className="pt-4 space-y-2">
                   <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white" size="lg">
                     Contact This Supplier
                   </Button>
+                  
+                  {supplier.catalogue_button && (
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-orange-500 text-orange-500 hover:bg-orange-50" 
+                      size="lg"
+                    >
+                      <FileText className="w-4 h-4 mr-2" />
+                      {supplier.catalogue_button}
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>
