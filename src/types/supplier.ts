@@ -13,6 +13,7 @@ export interface Supplier {
   products?: string[];
   partnership_years?: number;
   catalogue_button?: string;
+  catalogue_file_url?: string;
   created_at: Date;
   updated_at: Date;
 }
@@ -35,4 +36,5 @@ export interface CSVSupplier {
   categories?: string;
   partnership_years?: number;
   catalogue_button?: string;
+  catalogue_file_url?: string;
 }

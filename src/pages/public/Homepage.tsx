@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,12 +13,6 @@ const Homepage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('All Suppliers');
 
-  const categories = [
-    'All Suppliers', 'Packaging', 'Raw Materials', 'Sustainable Products', 
-    'Electronics', 'Manufacturing', 'Hardware', 'Textiles', 'Fabrics', 
-    'Food', 'Organic', 'Agriculture'
-  ];
-
   const { data: suppliers = [], isLoading } = useQuery({
     queryKey: ['suppliers'],
     queryFn: async () => {
@@ -26,6 +20,17 @@ const Homepage = () => {
       return allSuppliers;
     },
   });
+
+  // Generate categories dynamically from supplier data
+  const categories = useMemo(() => {
+    const uniqueCategories = new Set<string>();
+    suppliers.forEach(supplier => {
+      supplier.categories.forEach(category => {
+        uniqueCategories.add(category);
+      });
+    });
+    return ['All Suppliers', ...Array.from(uniqueCategories).sort()];
+  }, [suppliers]);
 
   const filteredSuppliers = suppliers.filter(supplier => {
     const matchesSearch = supplier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -156,7 +161,7 @@ const Homepage = () => {
                     {/* Partnership Duration */}
                     <div className="flex items-center text-gray-600 mb-4">
                       <Clock className="w-4 h-4 mr-1" />
-                      <span className="text-sm">5 years partnership</span>
+                      <span className="text-sm">{supplier.partnership_years || 5} years partnership</span>
                     </div>
                     
                     <Link to={`/supplier/${supplier.slug}`}>

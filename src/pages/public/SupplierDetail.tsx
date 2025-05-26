@@ -6,7 +6,7 @@ import { PublicNavbar } from '@/components/PublicNavbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { db } from '@/lib/firebase';
-import { MapPin, Clock, Mail, Phone, Globe, ArrowRight, FileText } from 'lucide-react';
+import { MapPin, Clock, Mail, Phone, Globe, FileText } from 'lucide-react';
 
 const SupplierDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -16,6 +16,12 @@ const SupplierDetail = () => {
     queryFn: () => db.getSupplierBySlug(slug!),
     enabled: !!slug,
   });
+
+  const handleCatalogueDownload = () => {
+    if (supplier?.catalogue_file_url) {
+      window.open(supplier.catalogue_file_url, '_blank');
+    }
+  };
 
   if (isLoading) {
     return (
@@ -62,9 +68,9 @@ const SupplierDetail = () => {
         <nav className="mb-8">
           <div className="flex items-center space-x-2 text-sm text-gray-600">
             <Link to="/" className="hover:text-orange-500">Home</Link>
-            <ArrowRight className="w-4 h-4" />
+            <span>></span>
             <Link to="/" className="hover:text-orange-500">Suppliers</Link>
-            <ArrowRight className="w-4 h-4" />
+            <span>></span>
             <span className="text-gray-900">{supplier.name}</span>
           </div>
         </nav>
@@ -214,14 +220,15 @@ const SupplierDetail = () => {
                     Contact This Supplier
                   </Button>
                   
-                  {supplier.catalogue_button && (
+                  {(supplier.catalogue_button || supplier.catalogue_file_url) && (
                     <Button 
                       variant="outline" 
                       className="w-full border-orange-500 text-orange-500 hover:bg-orange-50" 
                       size="lg"
+                      onClick={handleCatalogueDownload}
                     >
                       <FileText className="w-4 h-4 mr-2" />
-                      {supplier.catalogue_button}
+                      {supplier.catalogue_button || 'Download Catalogue'}
                     </Button>
                   )}
                 </div>

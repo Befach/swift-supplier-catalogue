@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Supplier } from '@/types/supplier';
-import { X, Plus } from 'lucide-react';
+import { X, Plus, Upload } from 'lucide-react';
 
 interface SupplierFormProps {
   initialData?: Partial<Supplier>;
@@ -30,7 +30,8 @@ export const SupplierForm: React.FC<SupplierFormProps> = ({
     categories: initialData?.categories?.join(', ') || '',
     logo_url: initialData?.logo_url || '',
     partnership_years: initialData?.partnership_years || 10,
-    catalogue_button: initialData?.catalogue_button || ''
+    catalogue_button: initialData?.catalogue_button || '',
+    catalogue_file_url: initialData?.catalogue_file_url || ''
   });
 
   const [products, setProducts] = useState<string[]>(initialData?.products || []);
@@ -64,6 +65,16 @@ export const SupplierForm: React.FC<SupplierFormProps> = ({
 
   const removeProduct = (index: number) => {
     setProducts(products.filter((_, i) => i !== index));
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // In a real app, you would upload this to Firebase Storage or another service
+      // For now, we'll just set a placeholder URL
+      const fileUrl = URL.createObjectURL(file);
+      handleChange('catalogue_file_url', fileUrl);
+    }
   };
 
   return (
@@ -161,12 +172,31 @@ export const SupplierForm: React.FC<SupplierFormProps> = ({
       </div>
 
       <div>
+        <Label htmlFor="catalogue_file">Catalogue File (PDF/CSV/DOC)</Label>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <Input
+              id="catalogue_file"
+              type="file"
+              accept=".pdf,.csv,.doc,.docx"
+              onChange={handleFileUpload}
+              className="flex-1"
+            />
+            <Upload className="w-4 h-4 text-gray-400" />
+          </div>
+          {formData.catalogue_file_url && (
+            <p className="text-sm text-green-600">File uploaded successfully</p>
+          )}
+        </div>
+      </div>
+
+      <div>
         <Label htmlFor="categories">Categories</Label>
         <Input
           id="categories"
           value={formData.categories}
           onChange={(e) => handleChange('categories', e.target.value)}
-          placeholder="Technology, Software, Consulting (comma separated)"
+          placeholder="IT Equipment, Technology, Software (comma separated)"
         />
       </div>
 
