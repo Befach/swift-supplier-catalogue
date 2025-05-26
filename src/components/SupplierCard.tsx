@@ -86,14 +86,14 @@ export const SupplierCard: React.FC<SupplierCardProps> = ({ supplier }) => {
             </Button>
           </Link>
           
-          {(supplier.catalogue_button || supplier.catalogue_file_url) && (
+          {supplier.catalogue_file_url && (
             <Button 
               variant="outline" 
               className="w-full text-orange-500 border-orange-500 hover:bg-orange-50"
               onClick={handleCatalogueDownload}
             >
               <FileText className="w-4 h-4 mr-2" />
-              {supplier.catalogue_button || `Download "${supplier.name}" Catalogue`}
+              Download Catalogue
             </Button>
           )}
         </div>
