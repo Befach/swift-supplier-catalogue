@@ -247,7 +247,7 @@ const SupplierDetail = () => {
                       onClick={handleCatalogueDownload}
                     >
                       <FileText className="w-4 h-4 mr-2" />
-                      {supplier.catalogue_button || 'Download Catalogue'}
+                      {supplier.catalogue_button || `Download "${supplier.name}" Catalogue`}
                     </Button>
                   )}
                 </div>
