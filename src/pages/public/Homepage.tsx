@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -10,15 +9,17 @@ import { SuppliersSort, SortOption } from '@/components/SuppliersSort';
 import { useQuery } from '@tanstack/react-query';
 import { db } from '@/lib/firebase';
 import { Supplier } from '@/types/supplier';
-import { MapPin, Clock, ArrowRight, Search } from 'lucide-react';
+import { MapPin, Clock, ArrowRight, Search, ChevronDown, ChevronUp } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 12;
+const INITIAL_CATEGORIES_DISPLAY = 8;
 
 const Homepage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('All Suppliers');
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState<SortOption>('name-asc');
+  const [showAllCategories, setShowAllCategories] = useState(false);
 
   const { data: suppliers = [], isLoading: isDataLoading } = useQuery({
     queryKey: ['suppliers'],
@@ -38,6 +39,16 @@ const Homepage = () => {
     });
     return ['All Suppliers', ...Array.from(uniqueCategories).sort()];
   }, [suppliers]);
+
+  // Categories to display based on show more state
+  const displayedCategories = useMemo(() => {
+    if (showAllCategories) {
+      return categories;
+    }
+    return categories.slice(0, INITIAL_CATEGORIES_DISPLAY);
+  }, [categories, showAllCategories]);
+
+  const hasMoreCategories = categories.length > INITIAL_CATEGORIES_DISPLAY;
 
   const filteredAndSortedSuppliers = useMemo(() => {
     let filtered = suppliers.filter(supplier => {
@@ -113,11 +124,11 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* Category Filters - Improved mobile layout */}
+      {/* Category Filters - Improved with More button */}
       <section className="bg-white py-4 sm:py-6 border-b border-gray-100">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap gap-2 justify-center">
-            {categories.map(category => (
+          <div className="flex flex-wrap gap-2 justify-center items-center">
+            {displayedCategories.map(category => (
               <button
                 key={category}
                 onClick={() => setActiveCategory(category)}
@@ -130,6 +141,25 @@ const Homepage = () => {
                 {category}
               </button>
             ))}
+            
+            {hasMoreCategories && (
+              <button
+                onClick={() => setShowAllCategories(!showAllCategories)}
+                className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200 hover:border-gray-400 flex items-center gap-1"
+              >
+                {showAllCategories ? (
+                  <>
+                    Less
+                    <ChevronUp className="w-3 h-3" />
+                  </>
+                ) : (
+                  <>
+                    More ({categories.length - INITIAL_CATEGORIES_DISPLAY})
+                    <ChevronDown className="w-3 h-3" />
+                  </>
+                )}
+              </button>
+            )}
           </div>
         </div>
       </section>
