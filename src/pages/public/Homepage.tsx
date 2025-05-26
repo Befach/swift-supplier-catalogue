@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -123,7 +122,11 @@ const Homepage = () => {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                 {displayedSuppliers.map((supplier: Supplier) => (
-                  <div key={supplier.id} className="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-300 overflow-hidden">
+                  <Link 
+                    key={supplier.id} 
+                    to={`/supplier/${supplier.slug}`}
+                    className="block group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-300 overflow-hidden cursor-pointer"
+                  >
                     {/* Image Container */}
                     <div className="relative w-full h-40 sm:h-48 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
                       {supplier.logo_url ? (
@@ -187,15 +190,13 @@ const Homepage = () => {
                         <span className="text-xs sm:text-sm">Exporting from {supplier.partnership_years || 5} years</span>
                       </div>
                       
-                      {/* CTA Button */}
-                      <Link to={`/supplier/${supplier.slug}`} className="block">
-                        <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 sm:py-3 rounded-xl shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all duration-200 group">
-                          View Details 
-                          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
-                        </Button>
-                      </Link>
+                      {/* CTA Button - now just for visual indication */}
+                      <div className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 sm:py-3 rounded-xl shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all duration-200 group flex items-center justify-center">
+                        View Details 
+                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
 
