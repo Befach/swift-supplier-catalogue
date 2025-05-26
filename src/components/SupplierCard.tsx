@@ -4,13 +4,20 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Supplier } from '@/types/supplier';
-import { Clock } from 'lucide-react';
+import { Clock, FileText } from 'lucide-react';
 
 interface SupplierCardProps {
   supplier: Supplier;
 }
 
 export const SupplierCard: React.FC<SupplierCardProps> = ({ supplier }) => {
+  const handleCatalogueDownload = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (supplier.catalogue_file_url) {
+      window.open(supplier.catalogue_file_url, '_blank');
+    }
+  };
+
   return (
     <Card className="hover:shadow-lg transition-shadow duration-200">
       <CardHeader>
@@ -72,11 +79,24 @@ export const SupplierCard: React.FC<SupplierCardProps> = ({ supplier }) => {
           </div>
         )}
         
-        <Link to={`/supplier/${supplier.slug}`}>
-          <Button variant="outline" className="w-full">
-            View Details
-          </Button>
-        </Link>
+        <div className="space-y-2">
+          <Link to={`/supplier/${supplier.slug}`}>
+            <Button variant="outline" className="w-full">
+              View Details
+            </Button>
+          </Link>
+          
+          {(supplier.catalogue_button || supplier.catalogue_file_url) && (
+            <Button 
+              variant="outline" 
+              className="w-full text-orange-500 border-orange-500 hover:bg-orange-50"
+              onClick={handleCatalogueDownload}
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              {supplier.catalogue_button || `Download "${supplier.name}" Catalogue`}
+            </Button>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
