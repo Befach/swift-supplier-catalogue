@@ -11,13 +11,8 @@ interface SupplierFiltersProps {
   filters: FilterType;
   onFiltersChange: (filters: Partial<FilterType>) => void;
   onClearFilters: () => void;
+  availableCategories?: string[];
 }
-
-const CATEGORIES = [
-  'Technology', 'Software', 'Energy', 'Sustainability', 
-  'Design', 'Marketing', 'Manufacturing', 'Construction',
-  'Healthcare', 'Education', 'Finance', 'Retail'
-];
 
 const CITIES = [
   'San Francisco', 'New York', 'Los Angeles', 'Chicago',
@@ -27,7 +22,8 @@ const CITIES = [
 export const SupplierFilters: React.FC<SupplierFiltersProps> = ({
   filters,
   onFiltersChange,
-  onClearFilters
+  onClearFilters,
+  availableCategories = []
 }) => {
   const handleCategoryChange = (category: string, checked: boolean) => {
     const newCategories = checked
@@ -79,28 +75,30 @@ export const SupplierFilters: React.FC<SupplierFiltersProps> = ({
         </div>
 
         {/* Categories */}
-        <div>
-          <label className="text-sm font-medium mb-2 block">Categories</label>
-          <div className="space-y-2 max-h-48 overflow-y-auto">
-            {CATEGORIES.map(category => (
-              <div key={category} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`category-${category}`}
-                  checked={(filters.categories || []).includes(category)}
-                  onCheckedChange={(checked) => 
-                    handleCategoryChange(category, checked as boolean)
-                  }
-                />
-                <label 
-                  htmlFor={`category-${category}`}
-                  className="text-sm cursor-pointer"
-                >
-                  {category}
-                </label>
-              </div>
-            ))}
+        {availableCategories.length > 0 && (
+          <div>
+            <label className="text-sm font-medium mb-2 block">Categories</label>
+            <div className="space-y-2 max-h-48 overflow-y-auto">
+              {availableCategories.map(category => (
+                <div key={category} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={`category-${category}`}
+                    checked={(filters.categories || []).includes(category)}
+                    onCheckedChange={(checked) => 
+                      handleCategoryChange(category, checked as boolean)
+                    }
+                  />
+                  <label 
+                    htmlFor={`category-${category}`}
+                    className="text-sm cursor-pointer"
+                  >
+                    {category}
+                  </label>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </CardContent>
     </Card>
   );

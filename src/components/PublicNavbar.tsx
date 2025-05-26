@@ -29,26 +29,22 @@ export const PublicNavbar = () => {
             >
               Home
             </Link>
-            <Link 
-              to="/about" 
-              className={`transition-colors ${
-                isActive('/about') 
-                  ? 'text-orange-500 font-medium' 
-                  : 'text-gray-600 hover:text-orange-500'
-              }`}
+            <a 
+              href="https://befach.com/pages/about-us"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-600 hover:text-orange-500 transition-colors"
             >
               About
-            </Link>
-            <Link 
-              to="/contact" 
-              className={`transition-colors ${
-                isActive('/contact') 
-                  ? 'text-orange-500 font-medium' 
-                  : 'text-gray-600 hover:text-orange-500'
-              }`}
+            </a>
+            <a 
+              href="https://befach.com/policies/contact-information"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-600 hover:text-orange-500 transition-colors"
             >
               Contact
-            </Link>
+            </a>
             <Link to="/admin/login">
               <Button variant="outline" size="sm" className="border-gray-300 text-gray-700 hover:bg-gray-50">
                 Admin Login
