@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Supplier } from '@/types/supplier';
-import { X, Plus } from 'lucide-react';
+import { X, Plus, Upload } from 'lucide-react';
 
 interface SupplierFormProps {
   initialData?: Partial<Supplier>;
@@ -30,6 +30,7 @@ export const SupplierForm: React.FC<SupplierFormProps> = ({
     categories: initialData?.categories?.join(', ') || '',
     logo_url: initialData?.logo_url || '',
     partnership_years: initialData?.partnership_years || 10,
+    catalogue_button: initialData?.catalogue_button || '',
     catalogue_file_url: initialData?.catalogue_file_url || ''
   });
 
@@ -66,198 +67,192 @@ export const SupplierForm: React.FC<SupplierFormProps> = ({
     setProducts(products.filter((_, i) => i !== index));
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // In a real app, you would upload this to Firebase Storage or another service
+      // For now, we'll just set a placeholder URL
+      const fileUrl = URL.createObjectURL(file);
+      handleChange('catalogue_file_url', fileUrl);
+    }
+  };
+
   return (
-    <div className="max-h-[80vh] overflow-y-auto">
-      <form onSubmit={handleSubmit} className="space-y-6 p-1">
-        {/* Basic Information Section */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Basic Information</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="name" className="text-sm font-medium">Company Name *</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => handleChange('name', e.target.value)}
-                required
-                placeholder="Enter company name"
-                className="mt-1"
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="city" className="text-sm font-medium">City</Label>
-              <Input
-                id="city"
-                value={formData.city}
-                onChange={(e) => handleChange('city', e.target.value)}
-                placeholder="Enter city location"
-                className="mt-1"
-              />
-            </div>
-          </div>
-
-          <div>
-            <Label htmlFor="description" className="text-sm font-medium">Company Description</Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => handleChange('description', e.target.value)}
-              placeholder="Brief description of the company and services..."
-              rows={3}
-              className="mt-1"
-            />
-          </div>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="name">Name *</Label>
+          <Input
+            id="name"
+            value={formData.name}
+            onChange={(e) => handleChange('name', e.target.value)}
+            required
+            placeholder="Company name"
+          />
         </div>
+        
+        <div>
+          <Label htmlFor="city">City</Label>
+          <Input
+            id="city"
+            value={formData.city}
+            onChange={(e) => handleChange('city', e.target.value)}
+            placeholder="City location"
+          />
+        </div>
+      </div>
 
-        {/* Contact Information Section */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Contact Information</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="email" className="text-sm font-medium">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleChange('email', e.target.value)}
-                placeholder="contact@company.com"
-                className="mt-1"
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="phone" className="text-sm font-medium">Phone</Label>
-              <Input
-                id="phone"
-                value={formData.phone}
-                onChange={(e) => handleChange('phone', e.target.value)}
-                placeholder="+1-555-0123"
-                className="mt-1"
-              />
-            </div>
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            value={formData.email}
+            onChange={(e) => handleChange('email', e.target.value)}
+            placeholder="contact@company.com"
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="phone">Phone</Label>
+          <Input
+            id="phone"
+            value={formData.phone}
+            onChange={(e) => handleChange('phone', e.target.value)}
+            placeholder="+1-555-0123"
+          />
+        </div>
+      </div>
 
-          <div>
-            <Label htmlFor="website" className="text-sm font-medium">Website</Label>
+      <div>
+        <Label htmlFor="website">Website</Label>
+        <Input
+          id="website"
+          type="url"
+          value={formData.website}
+          onChange={(e) => handleChange('website', e.target.value)}
+          placeholder="https://company.com"
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="logo_url">Logo URL</Label>
+        <Input
+          id="logo_url"
+          type="url"
+          value={formData.logo_url}
+          onChange={(e) => handleChange('logo_url', e.target.value)}
+          placeholder="https://example.com/logo.jpg"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="partnership_years">Partnership Duration (Years)</Label>
+          <Input
+            id="partnership_years"
+            type="number"
+            value={formData.partnership_years}
+            onChange={(e) => handleChange('partnership_years', parseInt(e.target.value) || 10)}
+            placeholder="10"
+            min="1"
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="catalogue_button">Catalogue Button Text</Label>
+          <Input
+            id="catalogue_button"
+            value={formData.catalogue_button}
+            onChange={(e) => handleChange('catalogue_button', e.target.value)}
+            placeholder="Download Catalogue"
+          />
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="catalogue_file">Catalogue File (PDF/CSV/DOC)</Label>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
             <Input
-              id="website"
-              type="url"
-              value={formData.website}
-              onChange={(e) => handleChange('website', e.target.value)}
-              placeholder="https://company.com"
-              className="mt-1"
+              id="catalogue_file"
+              type="file"
+              accept=".pdf,.csv,.doc,.docx"
+              onChange={handleFileUpload}
+              className="flex-1"
             />
+            <Upload className="w-4 h-4 text-gray-400" />
           </div>
+          {formData.catalogue_file_url && (
+            <p className="text-sm text-green-600">File uploaded successfully</p>
+          )}
         </div>
+      </div>
 
-        {/* Company Details Section */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Company Details</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="logo_url" className="text-sm font-medium">Logo URL</Label>
-              <Input
-                id="logo_url"
-                type="url"
-                value={formData.logo_url}
-                onChange={(e) => handleChange('logo_url', e.target.value)}
-                placeholder="https://example.com/logo.jpg"
-                className="mt-1"
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="partnership_years" className="text-sm font-medium">Partnership Duration (Years)</Label>
-              <Input
-                id="partnership_years"
-                type="number"
-                value={formData.partnership_years}
-                onChange={(e) => handleChange('partnership_years', parseInt(e.target.value) || 10)}
-                placeholder="10"
-                min="1"
-                className="mt-1"
-              />
-            </div>
-          </div>
+      <div>
+        <Label htmlFor="categories">Categories</Label>
+        <Input
+          id="categories"
+          value={formData.categories}
+          onChange={(e) => handleChange('categories', e.target.value)}
+          placeholder="IT Equipment, Technology, Software (comma separated)"
+        />
+      </div>
 
-          <div>
-            <Label htmlFor="catalogue_file_url" className="text-sm font-medium">Catalogue URL</Label>
+      <div>
+        <Label htmlFor="products">Products & Services</Label>
+        <div className="space-y-2">
+          <div className="flex gap-2">
             <Input
-              id="catalogue_file_url"
-              type="url"
-              value={formData.catalogue_file_url}
-              onChange={(e) => handleChange('catalogue_file_url', e.target.value)}
-              placeholder="https://example.com/catalogue.pdf"
-              className="mt-1"
+              value={newProduct}
+              onChange={(e) => setNewProduct(e.target.value)}
+              placeholder="Add a product or service..."
+              onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addProduct())}
             />
-            <p className="text-xs text-gray-500 mt-1">Direct link to company catalogue (PDF, DOC, etc.)</p>
+            <Button type="button" onClick={addProduct} size="sm">
+              <Plus className="w-4 h-4" />
+            </Button>
           </div>
-
-          <div>
-            <Label htmlFor="categories" className="text-sm font-medium">Categories</Label>
-            <Input
-              id="categories"
-              value={formData.categories}
-              onChange={(e) => handleChange('categories', e.target.value)}
-              placeholder="IT Equipment, Technology, Software (comma separated)"
-              className="mt-1"
-            />
-          </div>
-        </div>
-
-        {/* Products & Services Section */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Products & Services</h3>
-          
-          <div className="space-y-3">
-            <div className="flex gap-2">
-              <Input
-                value={newProduct}
-                onChange={(e) => setNewProduct(e.target.value)}
-                placeholder="Add a product or service..."
-                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addProduct())}
-                className="flex-1"
-              />
-              <Button type="button" onClick={addProduct} size="sm" variant="outline">
-                <Plus className="w-4 h-4" />
-              </Button>
+          {products.length > 0 && (
+            <div className="space-y-1">
+              {products.map((product, index) => (
+                <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded">
+                  <span className="flex-1 text-sm">{product}</span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => removeProduct(index)}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+              ))}
             </div>
-            
-            {products.length > 0 && (
-              <div className="space-y-2 max-h-32 overflow-y-auto">
-                {products.map((product, index) => (
-                  <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded border">
-                    <span className="flex-1 text-sm">{product}</span>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeProduct(index)}
-                      className="h-6 w-6 p-0"
-                    >
-                      <X className="w-3 h-3" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          )}
         </div>
+      </div>
 
-        {/* Form Actions */}
-        <div className="flex justify-end space-x-3 pt-6 border-t bg-white sticky bottom-0">
-          <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button type="submit" disabled={isLoading || !formData.name.trim()}>
-            {isLoading ? 'Saving...' : 'Save Supplier'}
-          </Button>
-        </div>
-      </form>
-    </div>
+      <div>
+        <Label htmlFor="description">Description</Label>
+        <Textarea
+          id="description"
+          value={formData.description}
+          onChange={(e) => handleChange('description', e.target.value)}
+          placeholder="Brief description of the company..."
+          rows={4}
+        />
+      </div>
+
+      <div className="flex justify-end space-x-2 pt-4">
+        <Button type="button" variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button type="submit" disabled={isLoading || !formData.name.trim()}>
+          {isLoading ? 'Saving...' : 'Save Supplier'}
+        </Button>
+      </div>
+    </form>
   );
 };
