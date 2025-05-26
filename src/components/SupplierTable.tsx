@@ -3,7 +3,6 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Supplier } from '@/types/supplier';
-import { FileText } from 'lucide-react';
 
 interface SupplierTableProps {
   suppliers: Supplier[];
@@ -18,12 +17,6 @@ export const SupplierTable: React.FC<SupplierTableProps> = ({
   onEdit,
   onDelete
 }) => {
-  const handleCatalogueDownload = (supplier: Supplier) => {
-    if (supplier.catalogue_file_url) {
-      window.open(supplier.catalogue_file_url, '_blank');
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="space-y-2">
@@ -121,17 +114,6 @@ export const SupplierTable: React.FC<SupplierTableProps> = ({
                   >
                     Edit
                   </Button>
-                  {(supplier.catalogue_button || supplier.catalogue_file_url) && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleCatalogueDownload(supplier)}
-                      className="text-orange-500 border-orange-500 hover:bg-orange-50"
-                    >
-                      <FileText className="w-3 h-3 mr-1" />
-                      {supplier.catalogue_button || `Download "${supplier.name}" Catalogue`}
-                    </Button>
-                  )}
                   <Button
                     variant="destructive"
                     size="sm"
