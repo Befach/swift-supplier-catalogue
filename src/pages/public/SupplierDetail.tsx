@@ -251,7 +251,7 @@ const SupplierDetail = () => {
                       onClick={handleCatalogueDownload}
                     >
                       <FileText className="w-4 h-4 flex-shrink-0" />
-                      <span className="truncate">Download {supplier.name} Catalogue</span>
+                      <span>Download Catalogue</span>
                     </Button>
                   )}
                 </div>
