@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -13,7 +14,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { db } from '@/lib/firebase';
-import { MapPin, Clock, Mail, Phone, Globe, FileText } from 'lucide-react';
+import { MapPin, Clock, Mail, Phone, Globe } from 'lucide-react';
 
 const SupplierDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -24,14 +25,7 @@ const SupplierDetail = () => {
     enabled: !!slug,
   });
 
-  const handleCatalogueDownload = () => {
-    if (supplier?.catalogue_file_url) {
-      window.open(supplier.catalogue_file_url, '_blank');
-    }
-  };
-
   console.log('Supplier data:', supplier);
-  console.log('Catalogue button text:', supplier?.catalogue_button);
   console.log('Catalogue file URL:', supplier?.catalogue_file_url);
 
   if (isLoading) {
@@ -238,22 +232,10 @@ const SupplierDetail = () => {
                   </div>
                 </div>
                 
-                <div className="pt-4 space-y-2">
+                <div className="pt-4">
                   <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white" size="lg">
                     Contact This Supplier
                   </Button>
-                  
-                  {(supplier.catalogue_button || supplier.catalogue_file_url) && (
-                    <Button 
-                      variant="outline" 
-                      className="w-full border-orange-500 text-orange-500 hover:bg-orange-50 flex items-center justify-center gap-2 py-3 px-4 text-sm font-medium" 
-                      size="lg"
-                      onClick={handleCatalogueDownload}
-                    >
-                      <FileText className="w-4 h-4 flex-shrink-0" />
-                      <span>Download Catalogue</span>
-                    </Button>
-                  )}
                 </div>
               </CardContent>
             </Card>
