@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -282,21 +283,21 @@ const SupplierDetail = () => {
               <h3 className="font-bold text-gray-900 mb-4">Contact Us</h3>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
-                  <MapPin className="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" />
-                  <div className="text-sm text-gray-600">
+                  <MapPin className="w-4 h-4 text-amber-700 mt-0.5 flex-shrink-0" />
+                  <div className="text-sm text-black">
                     <p className="font-medium">3rd floor, Luxor Park, Road No.2 Banjara Hills</p>
                     <p>Hyderabad, Telangana, 500034</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Mail className="w-4 h-4 text-orange-500 flex-shrink-0" />
-                  <a href="mailto:sales@befach.com" className="text-sm text-orange-500 hover:text-orange-600 transition-colors">
+                  <Mail className="w-4 h-4 text-amber-700 flex-shrink-0" />
+                  <a href="mailto:sales@befach.com" className="text-sm text-black hover:text-gray-700 transition-colors">
                     sales@befach.com
                   </a>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Phone className="w-4 h-4 text-orange-500 flex-shrink-0" />
-                  <a href="tel:7057053160" className="text-sm text-orange-500 hover:text-orange-600 transition-colors">
+                  <Phone className="w-4 h-4 text-amber-700 flex-shrink-0" />
+                  <a href="tel:7057053160" className="text-sm text-black hover:text-gray-700 transition-colors">
                     7057053160
                   </a>
                 </div>
