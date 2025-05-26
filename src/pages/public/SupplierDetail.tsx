@@ -246,12 +246,12 @@ const SupplierDetail = () => {
                   {(supplier.catalogue_button || supplier.catalogue_file_url) && (
                     <Button 
                       variant="outline" 
-                      className="w-full border-orange-500 text-orange-500 hover:bg-orange-50" 
+                      className="w-full border-orange-500 text-orange-500 hover:bg-orange-50 flex items-center justify-center gap-2 py-3 px-4 text-sm font-medium" 
                       size="lg"
                       onClick={handleCatalogueDownload}
                     >
-                      <FileText className="w-4 h-4 mr-2" />
-                      Download {supplier.name} Catalogue
+                      <FileText className="w-4 h-4 flex-shrink-0" />
+                      <span className="truncate">Download {supplier.name} Catalogue</span>
                     </Button>
                   )}
                 </div>
