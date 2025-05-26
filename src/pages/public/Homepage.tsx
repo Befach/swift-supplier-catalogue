@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -161,7 +160,7 @@ const Homepage = () => {
                     {/* Partnership Duration */}
                     <div className="flex items-center text-gray-600 mb-4">
                       <Clock className="w-4 h-4 mr-1" />
-                      <span className="text-sm">{supplier.partnership_years || 5} years partnership</span>
+                      <span className="text-sm">Exporting from {supplier.partnership_years || 5} years</span>
                     </div>
                     
                     <Link to={`/supplier/${supplier.slug}`}>
