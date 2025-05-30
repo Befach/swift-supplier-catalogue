@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,7 @@ import { PublicNavbar } from '@/components/PublicNavbar';
 import { SupplierSkeleton } from '@/components/SupplierSkeleton';
 import { SuppliersPagination } from '@/components/SuppliersPagination';
 import { SuppliersSort, SortOption } from '@/components/SuppliersSort';
+import { ServicesSection } from '@/components/ServicesSection';
 import { useQuery } from '@tanstack/react-query';
 import { db } from '@/lib/firebase';
 import { Supplier } from '@/types/supplier';
@@ -123,6 +125,9 @@ const Homepage = () => {
           </div>
         </div>
       </section>
+
+      {/* Services Section */}
+      <ServicesSection />
 
       {/* Category Filters - Improved with More button */}
       <section className="bg-white py-4 sm:py-6 border-b border-gray-100">
