@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -115,21 +116,24 @@ const SupplierDetail = () => {
                 </p>
               )}
 
-              {/* Action Buttons - Clean Rectangle Style */}
-              <div className="flex gap-4">
-                <button 
-                  className="px-6 py-2 border-2 border-black text-black hover:bg-gray-50 transition-colors" 
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <Button 
+                  className="bg-orange-500 hover:bg-orange-600 text-white" 
                   onClick={handleContactSupplier}
                 >
-                  Contact
-                </button>
+                  <Mail className="w-4 h-4 mr-2" />
+                  Contact Supplier
+                </Button>
                 
-                <button 
-                  className="px-6 py-2 border-2 border-black text-black hover:bg-gray-50 transition-colors" 
+                <Button 
+                  variant="outline" 
+                  className="border-orange-200 text-orange-500 hover:bg-orange-50" 
                   onClick={handleCatalogueDownload}
                 >
-                  Catalogue
-                </button>
+                  <FileText className="w-4 h-4 mr-2" />
+                  Download Catalogue
+                </Button>
               </div>
             </div>
           </div>
