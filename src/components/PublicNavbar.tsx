@@ -32,14 +32,14 @@ export const PublicNavbar = () => {
             >
               About
             </a>
-            <Link 
-              to="/contact" 
+            <a 
+              href="https://befach.com/policies/contact-information"
               target="_blank"
               rel="noopener noreferrer"
-              className={`font-medium ${location.pathname === '/contact' ? 'text-orange-500' : 'text-gray-700 hover:text-orange-500'}`}
+              className="font-medium text-gray-700 hover:text-orange-500"
             >
               Contact
-            </Link>
+            </a>
             <Link 
               to="/admin/login" 
               className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 font-medium"
