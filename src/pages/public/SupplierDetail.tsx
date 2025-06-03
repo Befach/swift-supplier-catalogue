@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -50,8 +49,12 @@ const SupplierDetail = () => {
     }
   };
 
-  const handleUnlockDetails = () => {
-    setIsContactGateOpen(true);
+  const handleContactButtonClick = () => {
+    if (!hasContactedSupplier) {
+      setIsContactGateOpen(true);
+    } else {
+      setIsContactFormOpen(true);
+    }
   };
 
   const handleContactGateClose = () => {
@@ -71,7 +74,7 @@ const SupplierDetail = () => {
     
     toast({
       title: "Contact Submitted Successfully!",
-      description: `Your message has been sent to ${supplier?.name}. You now have access to full details.`,
+      description: `Your message has been sent to ${supplier?.name}. You now have access to contact details.`,
     });
     
     setIsContactFormOpen(false);
@@ -156,8 +159,8 @@ const SupplierDetail = () => {
                   Thank you {contactFormData.name}! 🎉
                 </h3>
                 <p className="text-green-700 mb-4">
-                  You now have access to full supplier details and can contact them directly. 
-                  Your message has been sent to {supplier.name}.
+                  You now have access to {supplier.name}'s contact details. 
+                  Your message has been sent to them.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <div>
@@ -238,7 +241,7 @@ const SupplierDetail = () => {
                 
                 {supplier.description && (
                   <p className="text-gray-700 leading-relaxed text-sm md:text-base">
-                    {hasContactedSupplier ? supplier.description : getPreviewDescription(supplier.description)}
+                    {supplier.description}
                   </p>
                 )}
               </div>
@@ -246,34 +249,22 @@ const SupplierDetail = () => {
 
             {/* Action Buttons */}
             <div className="flex flex-row sm:flex-col gap-3 w-full sm:w-auto lg:min-w-fit">
-              {!hasContactedSupplier ? (
-                <Button 
-                  className="bg-orange-500 hover:bg-orange-600 text-white flex-1 sm:flex-none text-sm md:text-base" 
-                  onClick={handleUnlockDetails}
-                >
-                  <Lock className="w-4 h-4 mr-2" />
-                  Unlock Full Details
-                </Button>
-              ) : (
-                <>
-                  <Button 
-                    className="bg-orange-500 hover:bg-orange-600 text-white flex-1 sm:flex-none text-sm md:text-base animate-fade-in" 
-                    onClick={() => setIsContactFormOpen(true)}
-                  >
-                    <Mail className="w-4 h-4 mr-2" />
-                    Contact Again
-                  </Button>
-                  
-                  <Button 
-                    variant="outline" 
-                    className="border-orange-200 text-orange-500 hover:bg-orange-50 flex-1 sm:flex-none text-sm md:text-base animate-fade-in" 
-                    onClick={() => setIsCatalogueFormOpen(true)}
-                  >
-                    <FileText className="w-4 h-4 mr-2" />
-                    Download Catalogue
-                  </Button>
-                </>
-              )}
+              <Button 
+                className="bg-orange-500 hover:bg-orange-600 text-white flex-1 sm:flex-none text-sm md:text-base" 
+                onClick={handleContactButtonClick}
+              >
+                <Mail className="w-4 h-4 mr-2" />
+                {hasContactedSupplier ? 'Contact Again' : 'Contact Supplier'}
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                className="border-orange-200 text-orange-500 hover:bg-orange-50 flex-1 sm:flex-none text-sm md:text-base" 
+                onClick={() => setIsCatalogueFormOpen(true)}
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                Download Catalogue
+              </Button>
             </div>
           </div>
         </div>
@@ -281,42 +272,31 @@ const SupplierDetail = () => {
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Products & Services */}
-            <Card className={`bg-white shadow-sm border border-gray-200 transition-all duration-500 ${!hasContactedSupplier ? 'opacity-50' : 'animate-fade-in'}`}>
+            {/* Products & Services - Always visible */}
+            <Card className="bg-white shadow-sm border border-gray-200">
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
                   <Package className="w-5 h-5 mr-2 text-orange-500" />
                   Products & Services
-                  {!hasContactedSupplier && <Lock className="w-4 h-4 ml-2 text-gray-400" />}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {!hasContactedSupplier ? (
-                  <div className="text-center py-8">
-                    <Lock className="w-12 h-12 mx-auto text-gray-300 mb-4" />
-                    <p className="text-gray-500 mb-4">Contact supplier to view detailed products and services</p>
-                    <Button onClick={handleUnlockDetails} className="bg-orange-500 hover:bg-orange-600">
-                      Unlock Details
-                    </Button>
-                  </div>
+                {supplier.products && supplier.products.length > 0 ? (
+                  <ul className="space-y-3">
+                    {supplier.products.map((product, index) => (
+                      <li key={index} className="flex items-start">
+                        <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                        <span className="text-gray-700 leading-relaxed text-sm md:text-base">{product}</span>
+                      </li>
+                    ))}
+                  </ul>
                 ) : (
-                  supplier.products && supplier.products.length > 0 ? (
-                    <ul className="space-y-3">
-                      {supplier.products.map((product, index) => (
-                        <li key={index} className="flex items-start">
-                          <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                          <span className="text-gray-700 leading-relaxed text-sm md:text-base">{product}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-gray-500 text-sm md:text-base">No specific products listed.</p>
-                  )
+                  <p className="text-gray-500 text-sm md:text-base">No specific products listed.</p>
                 )}
               </CardContent>
             </Card>
 
-            {/* Industry Categories */}
+            {/* Industry Categories - Always visible */}
             <Card className="bg-white shadow-sm border border-gray-200">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-semibold text-gray-900">
@@ -341,34 +321,32 @@ const SupplierDetail = () => {
               </CardContent>
             </Card>
 
-            {/* Additional Description */}
-            {hasContactedSupplier && (
-              <Card className="bg-white shadow-sm border border-gray-200 animate-fade-in">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-lg font-semibold text-gray-900">
-                    About {supplier.name}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-700 leading-relaxed mb-4 text-sm md:text-base">
-                    {supplier.name} leads the industry in sustainable solutions and high-quality products. Our 
-                    innovative offerings help businesses achieve their goals while maintaining excellence and 
-                    integrity. We source materials from trusted suppliers and ensure a fully transparent supply 
-                    chain.
-                  </p>
-                  <p className="text-gray-700 leading-relaxed text-sm md:text-base">
-                    With over {supplier.partnership_years || 10} years of dedicated partnership, we've helped hundreds of businesses 
-                    transition to better solutions without compromising on quality or efficiency. Our team of experts is 
-                    always available to consult on your specific needs.
-                  </p>
-                </CardContent>
-              </Card>
-            )}
+            {/* Additional Description - Always visible */}
+            <Card className="bg-white shadow-sm border border-gray-200">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg font-semibold text-gray-900">
+                  About {supplier.name}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-700 leading-relaxed mb-4 text-sm md:text-base">
+                  {supplier.name} leads the industry in sustainable solutions and high-quality products. Our 
+                  innovative offerings help businesses achieve their goals while maintaining excellence and 
+                  integrity. We source materials from trusted suppliers and ensure a fully transparent supply 
+                  chain.
+                </p>
+                <p className="text-gray-700 leading-relaxed text-sm md:text-base">
+                  With over {supplier.partnership_years || 10} years of dedicated partnership, we've helped hundreds of businesses 
+                  transition to better solutions without compromising on quality or efficiency. Our team of experts is 
+                  always available to consult on your specific needs.
+                </p>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Contact Sidebar */}
           <div className="space-y-6">
-            {/* Contact Information */}
+            {/* Contact Information - Only this is gated */}
             <Card className={`bg-white shadow-sm border border-gray-200 transition-all duration-500 ${!hasContactedSupplier ? 'opacity-50' : 'animate-fade-in'}`}>
               <CardHeader>
                 <CardTitle className="text-lg font-semibold text-gray-900 flex items-center">
@@ -381,7 +359,7 @@ const SupplierDetail = () => {
                   <div className="text-center py-8">
                     <Lock className="w-12 h-12 mx-auto text-gray-300 mb-4" />
                     <p className="text-gray-500 text-sm mb-4">Fill contact form to access supplier contact details</p>
-                    <Button onClick={handleUnlockDetails} size="sm" className="bg-orange-500 hover:bg-orange-600">
+                    <Button onClick={handleContactButtonClick} size="sm" className="bg-orange-500 hover:bg-orange-600">
                       Contact to View
                     </Button>
                   </div>
@@ -451,69 +429,59 @@ const SupplierDetail = () => {
               </CardContent>
             </Card>
 
-            {/* Company Details */}
-            <Card className={`bg-white shadow-sm border border-gray-200 transition-all duration-500 ${!hasContactedSupplier ? 'opacity-50' : 'animate-fade-in'}`}>
+            {/* Company Details - Always visible */}
+            <Card className="bg-white shadow-sm border border-gray-200">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold text-gray-900 flex items-center">
                   Company Details
-                  {!hasContactedSupplier && <Lock className="w-4 h-4 ml-2 text-gray-400" />}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {!hasContactedSupplier ? (
-                  <div className="text-center py-6">
-                    <Lock className="w-10 h-10 mx-auto text-gray-300 mb-3" />
-                    <p className="text-gray-500 text-sm">Contact required for detailed company information</p>
+                <div className="flex items-center justify-between py-2">
+                  <div className="flex items-center text-sm text-gray-600">
+                    <Calendar className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
+                    <span>Founded</span>
                   </div>
-                ) : (
-                  <>
-                    <div className="flex items-center justify-between py-2">
-                      <div className="flex items-center text-sm text-gray-600">
-                        <Calendar className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
-                        <span>Founded</span>
-                      </div>
-                      <span className="text-sm font-medium text-gray-900">2015</span>
+                  <span className="text-sm font-medium text-gray-900">2015</span>
+                </div>
+
+                <div className="flex items-center justify-between py-2">
+                  <div className="flex items-center text-sm text-gray-600">
+                    <Users className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
+                    <span>Employees</span>
+                  </div>
+                  <span className="text-sm font-medium text-gray-900">50-100</span>
+                </div>
+
+                {supplier.partnership_years && (
+                  <div className="flex items-center justify-between py-2">
+                    <div className="flex items-center text-sm text-gray-600">
+                      <Clock className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
+                      <span>Partnership</span>
                     </div>
+                    <span className="text-sm font-medium text-gray-900">{supplier.partnership_years} years</span>
+                  </div>
+                )}
 
-                    <div className="flex items-center justify-between py-2">
-                      <div className="flex items-center text-sm text-gray-600">
-                        <Users className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
-                        <span>Employees</span>
-                      </div>
-                      <span className="text-sm font-medium text-gray-900">50-100</span>
-                    </div>
+                <div className="flex items-center justify-between py-2">
+                  <div className="flex items-center text-sm text-gray-600">
+                    <MapPin className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
+                    <span>Location</span>
+                  </div>
+                  <span className="text-sm font-medium text-gray-900">{supplier.city || 'Not specified'}</span>
+                </div>
 
-                    {supplier.partnership_years && (
-                      <div className="flex items-center justify-between py-2">
-                        <div className="flex items-center text-sm text-gray-600">
-                          <Clock className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
-                          <span>Partnership</span>
-                        </div>
-                        <span className="text-sm font-medium text-gray-900">{supplier.partnership_years} years</span>
-                      </div>
-                    )}
-
-                    <div className="flex items-center justify-between py-2">
-                      <div className="flex items-center text-sm text-gray-600">
-                        <MapPin className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
-                        <span>Location</span>
-                      </div>
-                      <span className="text-sm font-medium text-gray-900">{supplier.city || 'Not specified'}</span>
-                    </div>
-
-                    {supplier.catalogue_file_url && (
-                      <div className="pt-4 border-t border-gray-200">
-                        <Button 
-                          variant="outline" 
-                          className="w-full border-orange-200 text-orange-500 hover:bg-orange-50 text-sm md:text-base" 
-                          onClick={() => setIsCatalogueFormOpen(true)}
-                        >
-                          <FileText className="w-4 h-4 mr-2" />
-                          Download Catalogue
-                        </Button>
-                      </div>
-                    )}
-                  </>
+                {supplier.catalogue_file_url && (
+                  <div className="pt-4 border-t border-gray-200">
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-orange-200 text-orange-500 hover:bg-orange-50 text-sm md:text-base" 
+                      onClick={() => setIsCatalogueFormOpen(true)}
+                    >
+                      <FileText className="w-4 h-4 mr-2" />
+                      Download Catalogue
+                    </Button>
+                  </div>
                 )}
               </CardContent>
             </Card>
