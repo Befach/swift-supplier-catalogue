@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -87,54 +88,56 @@ const SupplierDetail = () => {
 
         {/* Supplier Header */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-          <div className="flex flex-col sm:flex-row items-start gap-4">
-            {supplier.logo_url ? (
-              <img
-                src={supplier.logo_url}
-                alt={supplier.name}
-                className="w-16 h-16 rounded-lg object-cover border border-gray-200"
-              />
-            ) : (
-              <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
-                <span className="text-gray-400 text-2xl">🏢</span>
-              </div>
-            )}
-            
-            <div className="flex-1 w-full sm:w-auto">
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">{supplier.name}</h1>
-              
-              {supplier.city && (
-                <div className="flex items-center text-gray-600 mb-3">
-                  <MapPin className="w-4 h-4 mr-2" />
-                  <span>{supplier.city}</span>
+          <div className="flex flex-col lg:flex-row items-start gap-6">
+            <div className="flex items-start gap-4 flex-1">
+              {supplier.logo_url ? (
+                <img
+                  src={supplier.logo_url}
+                  alt={supplier.name}
+                  className="w-16 h-16 rounded-lg object-cover border border-gray-200"
+                />
+              ) : (
+                <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
+                  <span className="text-gray-400 text-2xl">🏢</span>
                 </div>
               )}
               
-              {supplier.description && (
-                <p className="text-gray-700 leading-relaxed mb-4">
-                  {supplier.description}
-                </p>
-              )}
-
-              {/* Action Buttons */}
-              <div className="flex gap-3">
-                <Button 
-                  className="bg-orange-500 hover:bg-orange-600 text-white" 
-                  onClick={handleContactSupplier}
-                >
-                  <Mail className="w-4 h-4 mr-2" />
-                  Contact Supplier
-                </Button>
+              <div className="flex-1">
+                <h1 className="text-2xl font-bold text-gray-900 mb-2">{supplier.name}</h1>
                 
-                <Button 
-                  variant="outline" 
-                  className="border-orange-200 text-orange-500 hover:bg-orange-50" 
-                  onClick={handleCatalogueDownload}
-                >
-                  <FileText className="w-4 h-4 mr-2" />
-                  Download Catalogue
-                </Button>
+                {supplier.city && (
+                  <div className="flex items-center text-gray-600 mb-3">
+                    <MapPin className="w-4 h-4 mr-2" />
+                    <span>{supplier.city}</span>
+                  </div>
+                )}
+                
+                {supplier.description && (
+                  <p className="text-gray-700 leading-relaxed">
+                    {supplier.description}
+                  </p>
+                )}
               </div>
+            </div>
+
+            {/* Action Buttons - Positioned beside the content */}
+            <div className="flex flex-col gap-3 min-w-fit">
+              <Button 
+                className="bg-orange-500 hover:bg-orange-600 text-white" 
+                onClick={handleContactSupplier}
+              >
+                <Mail className="w-4 h-4 mr-2" />
+                Contact Supplier
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                className="border-orange-200 text-orange-500 hover:bg-orange-50" 
+                onClick={handleCatalogueDownload}
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                Download Catalogue
+              </Button>
             </div>
           </div>
         </div>
