@@ -1,16 +1,19 @@
 
-
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { PublicNavbar } from '@/components/PublicNavbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ContactSupplierForm } from '@/components/ContactSupplierForm';
+import { CatalogueDownloadForm } from '@/components/CatalogueDownloadForm';
 import { db } from '@/lib/firebase';
 import { MapPin, Clock, Mail, Phone, Globe, FileText, ArrowLeft, Package, Building, Users, Calendar } from 'lucide-react';
 
 const SupplierDetail = () => {
   const { slug } = useParams<{ slug: string }>();
+  const [isContactFormOpen, setIsContactFormOpen] = useState(false);
+  const [isCatalogueFormOpen, setIsCatalogueFormOpen] = useState(false);
   
   const { data: supplier, isLoading, error } = useQuery({
     queryKey: ['supplier', slug],
@@ -18,19 +21,12 @@ const SupplierDetail = () => {
     enabled: !!slug,
   });
 
-  const handleCatalogueDownload = () => {
-    if (supplier?.catalogue_file_url) {
-      window.open(supplier.catalogue_file_url, '_blank');
-    } else {
-      // If no catalogue file, show a message or handle as needed
-      alert('Catalogue not available for download');
-    }
+  const handleContactSupplier = () => {
+    setIsContactFormOpen(true);
   };
 
-  const handleContactSupplier = () => {
-    if (supplier?.email) {
-      window.location.href = `mailto:${supplier.email}`;
-    }
+  const handleCatalogueDownload = () => {
+    setIsCatalogueFormOpen(true);
   };
 
   console.log('Supplier data:', supplier);
@@ -396,6 +392,20 @@ const SupplierDetail = () => {
           </div>
         </footer>
       </div>
+
+      {/* Contact Form Modal */}
+      <ContactSupplierForm 
+        isOpen={isContactFormOpen}
+        onClose={() => setIsContactFormOpen(false)}
+        supplierName={supplier?.name || ''}
+      />
+
+      {/* Catalogue Download Form Modal */}
+      <CatalogueDownloadForm 
+        isOpen={isCatalogueFormOpen}
+        onClose={() => setIsCatalogueFormOpen(false)}
+        supplierName={supplier?.name || ''}
+      />
     </div>
   );
 };
