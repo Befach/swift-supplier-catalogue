@@ -26,12 +26,16 @@ export const PublicNavbar = () => {
             </Link>
             <Link 
               to="/about" 
+              target="_blank"
+              rel="noopener noreferrer"
               className={`font-medium ${location.pathname === '/about' ? 'text-orange-500' : 'text-gray-700 hover:text-orange-500'}`}
             >
               About
             </Link>
             <Link 
               to="/contact" 
+              target="_blank"
+              rel="noopener noreferrer"
               className={`font-medium ${location.pathname === '/contact' ? 'text-orange-500' : 'text-gray-700 hover:text-orange-500'}`}
             >
               Contact
