@@ -23,6 +23,12 @@ const SupplierDetail = () => {
     }
   };
 
+  const handleContactSupplier = () => {
+    if (supplier?.email) {
+      window.location.href = `mailto:${supplier.email}`;
+    }
+  };
+
   console.log('Supplier data:', supplier);
   console.log('Catalogue file URL:', supplier?.catalogue_file_url);
 
@@ -102,10 +108,32 @@ const SupplierDetail = () => {
               )}
               
               {supplier.description && (
-                <p className="text-gray-700 leading-relaxed">
+                <p className="text-gray-700 leading-relaxed mb-4">
                   {supplier.description}
                 </p>
               )}
+
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <Button 
+                  className="bg-orange-500 hover:bg-orange-600 text-white" 
+                  onClick={handleContactSupplier}
+                >
+                  <Mail className="w-4 h-4 mr-2" />
+                  Contact Supplier
+                </Button>
+                
+                {supplier.catalogue_file_url && (
+                  <Button 
+                    variant="outline" 
+                    className="border-orange-200 text-orange-500 hover:bg-orange-50" 
+                    onClick={handleCatalogueDownload}
+                  >
+                    <FileText className="w-4 h-4 mr-2" />
+                    Download Catalogue
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </div>
