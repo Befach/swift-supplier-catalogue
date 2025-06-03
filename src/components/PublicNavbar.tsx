@@ -24,14 +24,14 @@ export const PublicNavbar = () => {
             >
               Home
             </Link>
-            <Link 
-              to="/about" 
+            <a 
+              href="https://befach.com/pages/about-us"
               target="_blank"
               rel="noopener noreferrer"
-              className={`font-medium ${location.pathname === '/about' ? 'text-orange-500' : 'text-gray-700 hover:text-orange-500'}`}
+              className="font-medium text-gray-700 hover:text-orange-500"
             >
               About
-            </Link>
+            </a>
             <Link 
               to="/contact" 
               target="_blank"
