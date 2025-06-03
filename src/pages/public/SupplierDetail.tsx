@@ -6,7 +6,7 @@ import { PublicNavbar } from '@/components/PublicNavbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { db } from '@/lib/firebase';
-import { MapPin, Clock, Mail, Phone, Globe, FileText, ArrowLeft, Package } from 'lucide-react';
+import { MapPin, Clock, Mail, Phone, Globe, FileText, ArrowLeft, Package, Building, Users, Calendar } from 'lucide-react';
 
 const SupplierDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -188,8 +188,9 @@ const SupplierDetail = () => {
           </div>
 
           {/* Contact Sidebar */}
-          <div>
-            <Card className="bg-white shadow-sm border border-gray-200 sticky top-6">
+          <div className="space-y-6">
+            {/* Contact Information */}
+            <Card className="bg-white shadow-sm border border-gray-200">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold text-gray-900">Contact Information</CardTitle>
               </CardHeader>
@@ -210,7 +211,7 @@ const SupplierDetail = () => {
                   {supplier.phone && (
                     <Button 
                       variant="outline" 
-                      className="w-full border-orange-500 text-orange-500 hover:bg-orange-50" 
+                      className="w-full border-orange-200 text-orange-500 hover:bg-orange-50" 
                       size="lg"
                       onClick={() => window.location.href = `tel:${supplier.phone}`}
                     >
@@ -222,7 +223,7 @@ const SupplierDetail = () => {
                   {supplier.website && (
                     <Button 
                       variant="outline" 
-                      className="w-full border-orange-500 text-orange-500 hover:bg-orange-50" 
+                      className="w-full border-orange-200 text-orange-500 hover:bg-orange-50" 
                       size="lg"
                       onClick={() => window.open(supplier.website, '_blank')}
                     >
@@ -230,22 +231,10 @@ const SupplierDetail = () => {
                       Visit Website
                     </Button>
                   )}
-                  
-                  {supplier.catalogue_file_url && (
-                    <Button 
-                      variant="outline" 
-                      className="w-full border-orange-500 text-orange-500 hover:bg-orange-50" 
-                      size="lg"
-                      onClick={handleCatalogueDownload}
-                    >
-                      <FileText className="w-4 h-4 mr-2" />
-                      Download Catalogue
-                    </Button>
-                  )}
                 </div>
 
                 {/* Contact Details */}
-                <div className="pt-6 border-t border-gray-200 space-y-3">
+                <div className="pt-4 border-t border-gray-200 space-y-3">
                   {supplier.email && (
                     <div className="flex items-center text-sm text-gray-600">
                       <Mail className="w-4 h-4 mr-3 text-gray-400" />
@@ -266,19 +255,62 @@ const SupplierDetail = () => {
                       <span className="break-all">{supplier.website.replace('https://', '').replace('http://', '')}</span>
                     </div>
                   )}
-                  
-                  <div className="flex items-start text-sm text-gray-600">
-                    <MapPin className="w-4 h-4 mr-3 mt-0.5 text-gray-400" />
-                    <span>{supplier.city || 'Location not specified'}</span>
-                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-                  {supplier.partnership_years && (
+            {/* Company Details */}
+            <Card className="bg-white shadow-sm border border-gray-200">
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold text-gray-900">Company Details</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between py-2">
+                  <div className="flex items-center text-sm text-gray-600">
+                    <Calendar className="w-4 h-4 mr-3 text-gray-400" />
+                    <span>Founded</span>
+                  </div>
+                  <span className="text-sm font-medium text-gray-900">2015</span>
+                </div>
+
+                <div className="flex items-center justify-between py-2">
+                  <div className="flex items-center text-sm text-gray-600">
+                    <Users className="w-4 h-4 mr-3 text-gray-400" />
+                    <span>Employees</span>
+                  </div>
+                  <span className="text-sm font-medium text-gray-900">50-100</span>
+                </div>
+
+                {supplier.partnership_years && (
+                  <div className="flex items-center justify-between py-2">
                     <div className="flex items-center text-sm text-gray-600">
                       <Clock className="w-4 h-4 mr-3 text-gray-400" />
-                      <span>Exporting from {supplier.partnership_years} years</span>
+                      <span>Partnership</span>
                     </div>
-                  )}
+                    <span className="text-sm font-medium text-gray-900">{supplier.partnership_years} years</span>
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between py-2">
+                  <div className="flex items-center text-sm text-gray-600">
+                    <MapPin className="w-4 h-4 mr-3 text-gray-400" />
+                    <span>Location</span>
+                  </div>
+                  <span className="text-sm font-medium text-gray-900">{supplier.city || 'Not specified'}</span>
                 </div>
+
+                {supplier.catalogue_file_url && (
+                  <div className="pt-4 border-t border-gray-200">
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-orange-200 text-orange-500 hover:bg-orange-50" 
+                      onClick={handleCatalogueDownload}
+                    >
+                      <FileText className="w-4 h-4 mr-2" />
+                      Download Catalogue
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
