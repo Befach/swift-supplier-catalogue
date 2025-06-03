@@ -25,6 +25,9 @@ export const PublicNavbar = () => {
             <Link to="/contact" className="text-gray-700 hover:text-orange-500 font-medium">
               Contact
             </Link>
+            <Link to="/admin/login" className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 font-medium">
+              Admin Login
+            </Link>
           </div>
         </div>
       </div>
