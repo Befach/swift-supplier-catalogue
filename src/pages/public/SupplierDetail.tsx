@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { PublicNavbar } from '@/components/PublicNavbar';
@@ -7,14 +7,20 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ContactSupplierForm } from '@/components/ContactSupplierForm';
 import { CatalogueDownloadForm } from '@/components/CatalogueDownloadForm';
+import { ContactGateModal } from '@/components/ContactGateModal';
 import { db } from '@/lib/firebase';
-import { MapPin, Clock, Mail, Phone, Globe, FileText, ArrowLeft, Package, Building, Users, Calendar } from 'lucide-react';
+import { MapPin, Clock, Mail, Phone, Globe, FileText, ArrowLeft, Package, Building, Users, Calendar, Lock, X } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 const SupplierDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const [isContactFormOpen, setIsContactFormOpen] = useState(false);
   const [isCatalogueFormOpen, setIsCatalogueFormOpen] = useState(false);
-  const [submittedDetails, setSubmittedDetails] = useState<any>(null);
+  const [isContactGateOpen, setIsContactGateOpen] = useState(false);
+  const [hasContactedSupplier, setHasContactedSupplier] = useState(false);
+  const [contactFormData, setContactFormData] = useState<any>(null);
+  const [catalogueDetails, setCatalogueDetails] = useState<any>(null);
+  const [showSuccessBanner, setShowSuccessBanner] = useState(false);
   
   const { data: supplier, isLoading, error } = useQuery({
     queryKey: ['supplier', slug],
@@ -22,22 +28,66 @@ const SupplierDetail = () => {
     enabled: !!slug,
   });
 
-  const handleContactSupplier = () => {
+  // Load state from sessionStorage on mount
+  useEffect(() => {
+    if (slug) {
+      const savedState = sessionStorage.getItem(`supplier-contact-${slug}`);
+      if (savedState) {
+        const { hasContacted, formData } = JSON.parse(savedState);
+        setHasContactedSupplier(hasContacted);
+        setContactFormData(formData);
+      }
+    }
+  }, [slug]);
+
+  // Save state to sessionStorage
+  const saveState = (hasContacted: boolean, formData: any) => {
+    if (slug) {
+      sessionStorage.setItem(`supplier-contact-${slug}`, JSON.stringify({
+        hasContacted,
+        formData
+      }));
+    }
+  };
+
+  const handleUnlockDetails = () => {
+    setIsContactGateOpen(true);
+  };
+
+  const handleContactGateClose = () => {
+    setIsContactGateOpen(false);
+  };
+
+  const handleProceedToContact = () => {
+    setIsContactGateOpen(false);
     setIsContactFormOpen(true);
   };
 
-  const handleCatalogueDownload = () => {
-    setIsCatalogueFormOpen(true);
+  const handleContactFormSubmit = (data: any) => {
+    setContactFormData(data);
+    setHasContactedSupplier(true);
+    setShowSuccessBanner(true);
+    saveState(true, data);
+    
+    toast({
+      title: "Contact Submitted Successfully!",
+      description: `Your message has been sent to ${supplier?.name}. You now have access to full details.`,
+    });
+    
+    setIsContactFormOpen(false);
   };
 
   const handleCatalogueFormSubmit = (data: any) => {
-    setSubmittedDetails(data);
+    setCatalogueDetails(data);
     setIsCatalogueFormOpen(false);
   };
 
+  const dismissSuccessBanner = () => {
+    setShowSuccessBanner(false);
+  };
+
   console.log('Supplier data:', supplier);
-  console.log('Catalogue file URL:', supplier?.catalogue_file_url);
-  console.log('Submitted details:', submittedDetails);
+  console.log('Has contacted:', hasContactedSupplier);
 
   if (isLoading) {
     return (
@@ -75,6 +125,14 @@ const SupplierDetail = () => {
     );
   }
 
+  // Truncate description for preview
+  const getPreviewDescription = (text: string) => {
+    if (!text) return '';
+    const words = text.split(' ');
+    if (words.length <= 20) return text;
+    return words.slice(0, 20).join(' ') + '...';
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <PublicNavbar />
@@ -88,6 +146,69 @@ const SupplierDetail = () => {
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Directory
         </Link>
+
+        {/* Success Banner */}
+        {showSuccessBanner && hasContactedSupplier && contactFormData && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 md:p-6 mb-6 animate-fade-in">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-green-800 mb-2">
+                  Thank you {contactFormData.name}! 🎉
+                </h3>
+                <p className="text-green-700 mb-4">
+                  You now have access to full supplier details and can contact them directly. 
+                  Your message has been sent to {supplier.name}.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium text-green-700">Your Email: </span>
+                    <span className="text-green-900">{contactFormData.email}</span>
+                  </div>
+                  <div>
+                    <span className="font-medium text-green-700">Company: </span>
+                    <span className="text-green-900">{contactFormData.company || 'Not provided'}</span>
+                  </div>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={dismissSuccessBanner}
+                className="text-green-600 hover:text-green-800 hover:bg-green-100"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Catalogue Details Display */}
+        {catalogueDetails && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 md:p-6 mb-6">
+            <h3 className="text-lg font-semibold text-blue-800 mb-4">Your Catalogue Request Details</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm font-medium text-blue-700">Name:</p>
+                <p className="text-blue-900">{catalogueDetails.name}</p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-blue-700">Email:</p>
+                <p className="text-blue-900">{catalogueDetails.email}</p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-blue-700">Company:</p>
+                <p className="text-blue-900">{catalogueDetails.company || 'Not provided'}</p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-blue-700">Phone:</p>
+                <p className="text-blue-900">{catalogueDetails.phone || 'Not provided'}</p>
+              </div>
+            </div>
+            <p className="text-sm text-blue-700 mt-4">
+              The catalogue from {supplier.name} will be sent to your email address shortly.
+            </p>
+          </div>
+        )}
 
         {/* Supplier Header */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-6">
@@ -117,85 +238,80 @@ const SupplierDetail = () => {
                 
                 {supplier.description && (
                   <p className="text-gray-700 leading-relaxed text-sm md:text-base">
-                    {supplier.description}
+                    {hasContactedSupplier ? supplier.description : getPreviewDescription(supplier.description)}
                   </p>
                 )}
               </div>
             </div>
 
-            {/* Action Buttons - Responsive positioning */}
+            {/* Action Buttons */}
             <div className="flex flex-row sm:flex-col gap-3 w-full sm:w-auto lg:min-w-fit">
-              <Button 
-                className="bg-orange-500 hover:bg-orange-600 text-white flex-1 sm:flex-none text-sm md:text-base" 
-                onClick={handleContactSupplier}
-              >
-                <Mail className="w-4 h-4 mr-2" />
-                Contact Supplier
-              </Button>
-              
-              <Button 
-                variant="outline" 
-                className="border-orange-200 text-orange-500 hover:bg-orange-50 flex-1 sm:flex-none text-sm md:text-base" 
-                onClick={handleCatalogueDownload}
-              >
-                <FileText className="w-4 h-4 mr-2" />
-                Download Catalogue
-              </Button>
+              {!hasContactedSupplier ? (
+                <Button 
+                  className="bg-orange-500 hover:bg-orange-600 text-white flex-1 sm:flex-none text-sm md:text-base" 
+                  onClick={handleUnlockDetails}
+                >
+                  <Lock className="w-4 h-4 mr-2" />
+                  Unlock Full Details
+                </Button>
+              ) : (
+                <>
+                  <Button 
+                    className="bg-orange-500 hover:bg-orange-600 text-white flex-1 sm:flex-none text-sm md:text-base animate-fade-in" 
+                    onClick={() => setIsContactFormOpen(true)}
+                  >
+                    <Mail className="w-4 h-4 mr-2" />
+                    Contact Again
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    className="border-orange-200 text-orange-500 hover:bg-orange-50 flex-1 sm:flex-none text-sm md:text-base animate-fade-in" 
+                    onClick={() => setIsCatalogueFormOpen(true)}
+                  >
+                    <FileText className="w-4 h-4 mr-2" />
+                    Download Catalogue
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
-
-        {/* Submitted Details Display */}
-        {submittedDetails && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4 md:p-6 mb-6">
-            <h3 className="text-lg font-semibold text-green-800 mb-4">Your Catalogue Request Details</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm font-medium text-green-700">Name:</p>
-                <p className="text-green-900">{submittedDetails.name}</p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-green-700">Email:</p>
-                <p className="text-green-900">{submittedDetails.email}</p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-green-700">Company:</p>
-                <p className="text-green-900">{submittedDetails.company || 'Not provided'}</p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-green-700">Phone:</p>
-                <p className="text-green-900">{submittedDetails.phone || 'Not provided'}</p>
-              </div>
-            </div>
-            <p className="text-sm text-green-700 mt-4">
-              The catalogue from {supplier.name} will be sent to your email address shortly.
-            </p>
-          </div>
-        )}
 
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Products & Services */}
-            <Card className="bg-white shadow-sm border border-gray-200">
+            <Card className={`bg-white shadow-sm border border-gray-200 transition-all duration-500 ${!hasContactedSupplier ? 'opacity-50' : 'animate-fade-in'}`}>
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
                   <Package className="w-5 h-5 mr-2 text-orange-500" />
                   Products & Services
+                  {!hasContactedSupplier && <Lock className="w-4 h-4 ml-2 text-gray-400" />}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {supplier.products && supplier.products.length > 0 ? (
-                  <ul className="space-y-3">
-                    {supplier.products.map((product, index) => (
-                      <li key={index} className="flex items-start">
-                        <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                        <span className="text-gray-700 leading-relaxed text-sm md:text-base">{product}</span>
-                      </li>
-                    ))}
-                  </ul>
+                {!hasContactedSupplier ? (
+                  <div className="text-center py-8">
+                    <Lock className="w-12 h-12 mx-auto text-gray-300 mb-4" />
+                    <p className="text-gray-500 mb-4">Contact supplier to view detailed products and services</p>
+                    <Button onClick={handleUnlockDetails} className="bg-orange-500 hover:bg-orange-600">
+                      Unlock Details
+                    </Button>
+                  </div>
                 ) : (
-                  <p className="text-gray-500 text-sm md:text-base">No specific products listed.</p>
+                  supplier.products && supplier.products.length > 0 ? (
+                    <ul className="space-y-3">
+                      {supplier.products.map((product, index) => (
+                        <li key={index} className="flex items-start">
+                          <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                          <span className="text-gray-700 leading-relaxed text-sm md:text-base">{product}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-500 text-sm md:text-base">No specific products listed.</p>
+                  )
                 )}
               </CardContent>
             </Card>
@@ -226,8 +342,8 @@ const SupplierDetail = () => {
             </Card>
 
             {/* Additional Description */}
-            {supplier.description && (
-              <Card className="bg-white shadow-sm border border-gray-200">
+            {hasContactedSupplier && (
+              <Card className="bg-white shadow-sm border border-gray-200 animate-fade-in">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-lg font-semibold text-gray-900">
                     About {supplier.name}
@@ -253,126 +369,151 @@ const SupplierDetail = () => {
           {/* Contact Sidebar */}
           <div className="space-y-6">
             {/* Contact Information */}
-            <Card className="bg-white shadow-sm border border-gray-200">
+            <Card className={`bg-white shadow-sm border border-gray-200 transition-all duration-500 ${!hasContactedSupplier ? 'opacity-50' : 'animate-fade-in'}`}>
               <CardHeader>
-                <CardTitle className="text-lg font-semibold text-gray-900">Contact Information</CardTitle>
+                <CardTitle className="text-lg font-semibold text-gray-900 flex items-center">
+                  Contact Information
+                  {!hasContactedSupplier && <Lock className="w-4 h-4 ml-2 text-gray-400" />}
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* Action Buttons */}
-                <div className="space-y-3">
-                  {supplier.email && (
-                    <Button 
-                      className="w-full bg-orange-500 hover:bg-orange-600 text-white text-sm md:text-base" 
-                      size="lg"
-                      onClick={() => window.location.href = `mailto:${supplier.email}`}
-                    >
-                      <Mail className="w-4 h-4 mr-2" />
-                      Send Email
+                {!hasContactedSupplier ? (
+                  <div className="text-center py-8">
+                    <Lock className="w-12 h-12 mx-auto text-gray-300 mb-4" />
+                    <p className="text-gray-500 text-sm mb-4">Fill contact form to access supplier contact details</p>
+                    <Button onClick={handleUnlockDetails} size="sm" className="bg-orange-500 hover:bg-orange-600">
+                      Contact to View
                     </Button>
-                  )}
-                  
-                  {supplier.phone && (
-                    <Button 
-                      variant="outline" 
-                      className="w-full border-orange-200 text-orange-500 hover:bg-orange-50 text-sm md:text-base" 
-                      size="lg"
-                      onClick={() => window.location.href = `tel:${supplier.phone}`}
-                    >
-                      <Phone className="w-4 h-4 mr-2" />
-                      {supplier.phone}
-                    </Button>
-                  )}
-                  
-                  {supplier.website && (
-                    <Button 
-                      variant="outline" 
-                      className="w-full border-orange-200 text-orange-500 hover:bg-orange-50 text-sm md:text-base" 
-                      size="lg"
-                      onClick={() => window.open(supplier.website, '_blank')}
-                    >
-                      <Globe className="w-4 h-4 mr-2" />
-                      Visit Website
-                    </Button>
-                  )}
-                </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="space-y-3">
+                      {supplier.email && (
+                        <Button 
+                          className="w-full bg-orange-500 hover:bg-orange-600 text-white text-sm md:text-base" 
+                          size="lg"
+                          onClick={() => window.location.href = `mailto:${supplier.email}`}
+                        >
+                          <Mail className="w-4 h-4 mr-2" />
+                          Send Email
+                        </Button>
+                      )}
+                      
+                      {supplier.phone && (
+                        <Button 
+                          variant="outline" 
+                          className="w-full border-orange-200 text-orange-500 hover:bg-orange-50 text-sm md:text-base" 
+                          size="lg"
+                          onClick={() => window.location.href = `tel:${supplier.phone}`}
+                        >
+                          <Phone className="w-4 h-4 mr-2" />
+                          {supplier.phone}
+                        </Button>
+                      )}
+                      
+                      {supplier.website && (
+                        <Button 
+                          variant="outline" 
+                          className="w-full border-orange-200 text-orange-500 hover:bg-orange-50 text-sm md:text-base" 
+                          size="lg"
+                          onClick={() => window.open(supplier.website, '_blank')}
+                        >
+                          <Globe className="w-4 h-4 mr-2" />
+                          Visit Website
+                        </Button>
+                      )}
+                    </div>
 
-                {/* Contact Details */}
-                <div className="pt-4 border-t border-gray-200 space-y-3">
-                  {supplier.email && (
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Mail className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
-                      <span className="break-all">{supplier.email}</span>
+                    <div className="pt-4 border-t border-gray-200 space-y-3">
+                      {supplier.email && (
+                        <div className="flex items-center text-sm text-gray-600">
+                          <Mail className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
+                          <span className="break-all">{supplier.email}</span>
+                        </div>
+                      )}
+                      
+                      {supplier.phone && (
+                        <div className="flex items-center text-sm text-gray-600">
+                          <Phone className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
+                          <span>{supplier.phone}</span>
+                        </div>
+                      )}
+                      
+                      {supplier.website && (
+                        <div className="flex items-center text-sm text-gray-600">
+                          <Globe className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
+                          <span className="break-all">{supplier.website.replace('https://', '').replace('http://', '')}</span>
+                        </div>
+                      )}
                     </div>
-                  )}
-                  
-                  {supplier.phone && (
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Phone className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
-                      <span>{supplier.phone}</span>
-                    </div>
-                  )}
-                  
-                  {supplier.website && (
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Globe className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
-                      <span className="break-all">{supplier.website.replace('https://', '').replace('http://', '')}</span>
-                    </div>
-                  )}
-                </div>
+                  </>
+                )}
               </CardContent>
             </Card>
 
             {/* Company Details */}
-            <Card className="bg-white shadow-sm border border-gray-200">
+            <Card className={`bg-white shadow-sm border border-gray-200 transition-all duration-500 ${!hasContactedSupplier ? 'opacity-50' : 'animate-fade-in'}`}>
               <CardHeader>
-                <CardTitle className="text-lg font-semibold text-gray-900">Company Details</CardTitle>
+                <CardTitle className="text-lg font-semibold text-gray-900 flex items-center">
+                  Company Details
+                  {!hasContactedSupplier && <Lock className="w-4 h-4 ml-2 text-gray-400" />}
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center justify-between py-2">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Calendar className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
-                    <span>Founded</span>
+                {!hasContactedSupplier ? (
+                  <div className="text-center py-6">
+                    <Lock className="w-10 h-10 mx-auto text-gray-300 mb-3" />
+                    <p className="text-gray-500 text-sm">Contact required for detailed company information</p>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">2015</span>
-                </div>
-
-                <div className="flex items-center justify-between py-2">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Users className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
-                    <span>Employees</span>
-                  </div>
-                  <span className="text-sm font-medium text-gray-900">50-100</span>
-                </div>
-
-                {supplier.partnership_years && (
-                  <div className="flex items-center justify-between py-2">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Clock className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
-                      <span>Partnership</span>
+                ) : (
+                  <>
+                    <div className="flex items-center justify-between py-2">
+                      <div className="flex items-center text-sm text-gray-600">
+                        <Calendar className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
+                        <span>Founded</span>
+                      </div>
+                      <span className="text-sm font-medium text-gray-900">2015</span>
                     </div>
-                    <span className="text-sm font-medium text-gray-900">{supplier.partnership_years} years</span>
-                  </div>
-                )}
 
-                <div className="flex items-center justify-between py-2">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <MapPin className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
-                    <span>Location</span>
-                  </div>
-                  <span className="text-sm font-medium text-gray-900">{supplier.city || 'Not specified'}</span>
-                </div>
+                    <div className="flex items-center justify-between py-2">
+                      <div className="flex items-center text-sm text-gray-600">
+                        <Users className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
+                        <span>Employees</span>
+                      </div>
+                      <span className="text-sm font-medium text-gray-900">50-100</span>
+                    </div>
 
-                {supplier.catalogue_file_url && (
-                  <div className="pt-4 border-t border-gray-200">
-                    <Button 
-                      variant="outline" 
-                      className="w-full border-orange-200 text-orange-500 hover:bg-orange-50 text-sm md:text-base" 
-                      onClick={handleCatalogueDownload}
-                    >
-                      <FileText className="w-4 h-4 mr-2" />
-                      Download Catalogue
-                    </Button>
-                  </div>
+                    {supplier.partnership_years && (
+                      <div className="flex items-center justify-between py-2">
+                        <div className="flex items-center text-sm text-gray-600">
+                          <Clock className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
+                          <span>Partnership</span>
+                        </div>
+                        <span className="text-sm font-medium text-gray-900">{supplier.partnership_years} years</span>
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between py-2">
+                      <div className="flex items-center text-sm text-gray-600">
+                        <MapPin className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
+                        <span>Location</span>
+                      </div>
+                      <span className="text-sm font-medium text-gray-900">{supplier.city || 'Not specified'}</span>
+                    </div>
+
+                    {supplier.catalogue_file_url && (
+                      <div className="pt-4 border-t border-gray-200">
+                        <Button 
+                          variant="outline" 
+                          className="w-full border-orange-200 text-orange-500 hover:bg-orange-50 text-sm md:text-base" 
+                          onClick={() => setIsCatalogueFormOpen(true)}
+                        >
+                          <FileText className="w-4 h-4 mr-2" />
+                          Download Catalogue
+                        </Button>
+                      </div>
+                    )}
+                  </>
                 )}
               </CardContent>
             </Card>
@@ -428,11 +569,20 @@ const SupplierDetail = () => {
         </footer>
       </div>
 
+      {/* Contact Gate Modal */}
+      <ContactGateModal
+        isOpen={isContactGateOpen}
+        onClose={handleContactGateClose}
+        onProceed={handleProceedToContact}
+        supplierName={supplier?.name || ''}
+      />
+
       {/* Contact Form Modal */}
       <ContactSupplierForm 
         isOpen={isContactFormOpen}
         onClose={() => setIsContactFormOpen(false)}
         supplierName={supplier?.name || ''}
+        onSubmit={handleContactFormSubmit}
       />
 
       {/* Catalogue Download Form Modal */}

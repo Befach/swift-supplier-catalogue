@@ -6,7 +6,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { toast } from '@/hooks/use-toast';
 
 interface ContactFormData {
   name: string;
@@ -20,9 +19,10 @@ interface ContactSupplierFormProps {
   isOpen: boolean;
   onClose: () => void;
   supplierName: string;
+  onSubmit?: (data: ContactFormData) => void;
 }
 
-export const ContactSupplierForm = ({ isOpen, onClose, supplierName }: ContactSupplierFormProps) => {
+export const ContactSupplierForm = ({ isOpen, onClose, supplierName, onSubmit }: ContactSupplierFormProps) => {
   const form = useForm<ContactFormData>({
     defaultValues: {
       name: '',
@@ -33,12 +33,14 @@ export const ContactSupplierForm = ({ isOpen, onClose, supplierName }: ContactSu
     },
   });
 
-  const onSubmit = (data: ContactFormData) => {
+  const handleSubmit = (data: ContactFormData) => {
     console.log('Contact form submitted:', data);
-    toast({
-      title: "Message Sent!",
-      description: `Your message has been sent to ${supplierName}. They will contact you soon.`,
-    });
+    
+    // Call the onSubmit prop if provided
+    if (onSubmit) {
+      onSubmit(data);
+    }
+    
     form.reset();
     onClose();
   };
@@ -50,7 +52,7 @@ export const ContactSupplierForm = ({ isOpen, onClose, supplierName }: ContactSu
           <DialogTitle>Contact {supplierName}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="name"
