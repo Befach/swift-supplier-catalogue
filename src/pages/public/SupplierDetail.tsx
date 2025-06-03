@@ -1,19 +1,12 @@
+
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { PublicNavbar } from '@/components/PublicNavbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
 import { db } from '@/lib/firebase';
-import { MapPin, Clock, Mail, Phone, Globe, FileText } from 'lucide-react';
+import { MapPin, Clock, Mail, Phone, Globe, FileText, ArrowLeft, Package } from 'lucide-react';
 
 const SupplierDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -31,12 +24,11 @@ const SupplierDetail = () => {
   };
 
   console.log('Supplier data:', supplier);
-  console.log('Catalogue button text:', supplier?.catalogue_button);
   console.log('Catalogue file URL:', supplier?.catalogue_file_url);
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-gray-50">
         <PublicNavbar />
         <div className="container mx-auto px-4 py-8">
           <div className="animate-pulse">
@@ -55,7 +47,7 @@ const SupplierDetail = () => {
 
   if (error || !supplier) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-gray-50">
         <PublicNavbar />
         <div className="container mx-auto px-4 py-8 text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Supplier Not Found</h1>
@@ -71,120 +63,135 @@ const SupplierDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
       <PublicNavbar />
       
       <div className="container mx-auto px-4 py-8">
-        {/* Breadcrumb */}
-        <nav className="mb-8">
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="/" className="hover:text-orange-500">Home</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="/" className="hover:text-orange-500">Suppliers</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>{supplier.name}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </nav>
+        {/* Back to Directory Link */}
+        <Link 
+          to="/" 
+          className="inline-flex items-center text-orange-500 hover:text-orange-600 mb-8 font-medium"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Directory
+        </Link>
 
-        {/* Hero Image */}
-        <div className="w-full h-64 bg-gray-200 rounded-lg mb-8 flex items-center justify-center">
-          {supplier.logo_url ? (
-            <img
-              src={supplier.logo_url}
-              alt={supplier.name}
-              className="w-full h-full object-cover rounded-lg"
-            />
-          ) : (
-            <div className="text-gray-400 text-6xl">🏢</div>
-          )}
-        </div>
-
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2">
-            <div className="mb-6">
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">{supplier.name}</h1>
-              
-              <div className="flex flex-wrap items-center gap-6 mb-6">
-                {supplier.city && (
-                  <div className="flex items-center text-gray-600">
-                    <MapPin className="w-5 h-5 mr-2" />
-                    <span>{supplier.city}</span>
-                  </div>
-                )}
-                {supplier.partnership_years && (
-                  <div className="flex items-center text-gray-600">
-                    <Clock className="w-5 h-5 mr-2" />
-                    <span>Exporting from {supplier.partnership_years} years</span>
-                  </div>
-                )}
-              </div>
-
-              {supplier.categories.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {supplier.categories.map(category => (
-                    <span
-                      key={category}
-                      className="px-3 py-1 bg-white border border-gray-300 text-gray-700 text-sm rounded-full"
-                    >
-                      {category}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {supplier.description && (
-              <div className="mb-8">
-                <p className="text-gray-700 leading-relaxed text-lg">{supplier.description}</p>
-                <p className="text-gray-700 leading-relaxed mt-4">
-                  {supplier.name} leads the industry in sustainable solutions and high-quality products. Our 
-                  innovative offerings help businesses achieve their goals while maintaining excellence and 
-                  integrity. We source materials from trusted suppliers and ensure a fully transparent supply 
-                  chain. With over {supplier.partnership_years || 10} years of dedicated partnership, we've helped hundreds of businesses 
-                  transition to better solutions without compromising on quality or efficiency. Our team of experts is 
-                  always available to consult on your specific needs.
-                </p>
+        {/* Supplier Header */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="flex items-start gap-4">
+            {supplier.logo_url ? (
+              <img
+                src={supplier.logo_url}
+                alt={supplier.name}
+                className="w-16 h-16 rounded-lg object-cover border border-gray-200"
+              />
+            ) : (
+              <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
+                <span className="text-gray-400 text-2xl">🏢</span>
               </div>
             )}
+            
+            <div className="flex-1">
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">{supplier.name}</h1>
+              
+              {supplier.city && (
+                <div className="flex items-center text-gray-600 mb-3">
+                  <MapPin className="w-4 h-4 mr-2" />
+                  <span>{supplier.city}</span>
+                </div>
+              )}
+              
+              {supplier.description && (
+                <p className="text-gray-700 leading-relaxed">
+                  {supplier.description}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
 
-            {/* Key Products & Services */}
-            {supplier.products && supplier.products.length > 0 && (
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Key Products & Services</h2>
-                <Card className="border border-gray-200">
-                  <CardContent className="pt-6">
-                    <ul className="space-y-3">
-                      {supplier.products.map((product, index) => (
-                        <li key={index} className="flex items-start">
-                          <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                          <span className="text-gray-700 leading-relaxed">{product}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              </div>
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Products & Services */}
+            <Card className="bg-white shadow-sm border border-gray-200">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
+                  <Package className="w-5 h-5 mr-2 text-orange-500" />
+                  Products & Services
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {supplier.products && supplier.products.length > 0 ? (
+                  <ul className="space-y-3">
+                    {supplier.products.map((product, index) => (
+                      <li key={index} className="flex items-start">
+                        <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                        <span className="text-gray-700 leading-relaxed">{product}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-gray-500">No specific products listed.</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Industry Categories */}
+            <Card className="bg-white shadow-sm border border-gray-200">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg font-semibold text-gray-900">
+                  Industry Categories
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {supplier.categories.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {supplier.categories.map(category => (
+                      <span
+                        key={category}
+                        className="px-3 py-1.5 bg-orange-50 border border-orange-200 text-orange-700 text-sm rounded-lg font-medium"
+                      >
+                        {category}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500">No categories specified.</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Additional Description */}
+            {supplier.description && (
+              <Card className="bg-white shadow-sm border border-gray-200">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg font-semibold text-gray-900">
+                    About {supplier.name}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-700 leading-relaxed mb-4">
+                    {supplier.name} leads the industry in sustainable solutions and high-quality products. Our 
+                    innovative offerings help businesses achieve their goals while maintaining excellence and 
+                    integrity. We source materials from trusted suppliers and ensure a fully transparent supply 
+                    chain.
+                  </p>
+                  <p className="text-gray-700 leading-relaxed">
+                    With over {supplier.partnership_years || 10} years of dedicated partnership, we've helped hundreds of businesses 
+                    transition to better solutions without compromising on quality or efficiency. Our team of experts is 
+                    always available to consult on your specific needs.
+                  </p>
+                </CardContent>
+              </Card>
             )}
           </div>
 
           {/* Contact Sidebar */}
           <div>
-            <Card className="border border-gray-200">
+            <Card className="bg-white shadow-sm border border-gray-200 sticky top-6">
               <CardHeader>
-                <CardTitle className="text-xl">Contact Information</CardTitle>
+                <CardTitle className="text-lg font-semibold text-gray-900">Contact Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {supplier.email && (
@@ -193,7 +200,7 @@ const SupplierDetail = () => {
                     <div>
                       <a 
                         href={`mailto:${supplier.email}`}
-                        className="text-orange-500 hover:text-orange-600 underline"
+                        className="text-orange-500 hover:text-orange-600 underline break-all"
                       >
                         {supplier.email}
                       </a>
@@ -223,7 +230,7 @@ const SupplierDetail = () => {
                         href={supplier.website}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-orange-500 hover:text-orange-600 underline"
+                        className="text-orange-500 hover:text-orange-600 underline break-all"
                       >
                         {supplier.website.replace('https://', '').replace('http://', '')}
                       </a>
@@ -237,21 +244,30 @@ const SupplierDetail = () => {
                     {supplier.city || 'Location not specified'}
                   </div>
                 </div>
+
+                {supplier.partnership_years && (
+                  <div className="flex items-center">
+                    <Clock className="w-5 h-5 text-orange-500 mr-3" />
+                    <div className="text-gray-700">
+                      Exporting from {supplier.partnership_years} years
+                    </div>
+                  </div>
+                )}
                 
-                <div className="pt-4 space-y-2">
+                <div className="pt-4 space-y-3">
                   <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white" size="lg">
                     Contact This Supplier
                   </Button>
                   
-                  {(supplier.catalogue_button || supplier.catalogue_file_url) && (
+                  {supplier.catalogue_file_url && (
                     <Button 
                       variant="outline" 
-                      className="w-full border-orange-500 text-orange-500 hover:bg-orange-50 flex items-center justify-center gap-2 py-3 px-4 text-sm font-medium" 
+                      className="w-full border-orange-500 text-orange-500 hover:bg-orange-50 flex items-center justify-center gap-2" 
                       size="lg"
                       onClick={handleCatalogueDownload}
                     >
-                      <FileText className="w-4 h-4 flex-shrink-0" />
-                      <span>Download Catalogue</span>
+                      <FileText className="w-4 h-4" />
+                      Download Catalogue
                     </Button>
                   )}
                 </div>
