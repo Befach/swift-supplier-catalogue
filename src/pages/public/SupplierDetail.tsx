@@ -87,7 +87,7 @@ const SupplierDetail = () => {
 
         {/* Supplier Header */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-          <div className="flex items-start gap-4">
+          <div className="flex flex-col sm:flex-row items-start gap-4">
             {supplier.logo_url ? (
               <img
                 src={supplier.logo_url}
@@ -100,7 +100,7 @@ const SupplierDetail = () => {
               </div>
             )}
             
-            <div className="flex-1">
+            <div className="flex-1 w-full sm:w-auto">
               <h1 className="text-2xl font-bold text-gray-900 mb-2">{supplier.name}</h1>
               
               {supplier.city && (
@@ -117,9 +117,9 @@ const SupplierDetail = () => {
               )}
 
               {/* Action Buttons - Always Side by Side */}
-              <div className="flex gap-3">
+              <div className="flex flex-row gap-3 flex-wrap sm:flex-nowrap">
                 <Button 
-                  className="bg-orange-500 hover:bg-orange-600 text-white flex-shrink-0" 
+                  className="bg-orange-500 hover:bg-orange-600 text-white min-w-fit" 
                   onClick={handleContactSupplier}
                 >
                   <Mail className="w-4 h-4 mr-2" />
@@ -128,7 +128,7 @@ const SupplierDetail = () => {
                 
                 <Button 
                   variant="outline" 
-                  className="border-orange-200 text-orange-500 hover:bg-orange-50 flex-shrink-0" 
+                  className="border-orange-200 text-orange-500 hover:bg-orange-50 min-w-fit" 
                   onClick={handleCatalogueDownload}
                 >
                   <FileText className="w-4 h-4 mr-2" />
