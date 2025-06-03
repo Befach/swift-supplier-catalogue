@@ -194,81 +194,89 @@ const SupplierDetail = () => {
                 <CardTitle className="text-lg font-semibold text-gray-900">Contact Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {supplier.email && (
-                  <div className="flex items-center">
-                    <Mail className="w-5 h-5 text-orange-500 mr-3" />
-                    <div>
-                      <a 
-                        href={`mailto:${supplier.email}`}
-                        className="text-orange-500 hover:text-orange-600 underline break-all"
-                      >
-                        {supplier.email}
-                      </a>
-                    </div>
-                  </div>
-                )}
-                
-                {supplier.phone && (
-                  <div className="flex items-center">
-                    <Phone className="w-5 h-5 text-orange-500 mr-3" />
-                    <div>
-                      <a 
-                        href={`tel:${supplier.phone}`}
-                        className="text-orange-500 hover:text-orange-600 underline"
-                      >
-                        {supplier.phone}
-                      </a>
-                    </div>
-                  </div>
-                )}
-                
-                {supplier.website && (
-                  <div className="flex items-center">
-                    <Globe className="w-5 h-5 text-orange-500 mr-3" />
-                    <div>
-                      <a 
-                        href={supplier.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-orange-500 hover:text-orange-600 underline break-all"
-                      >
-                        {supplier.website.replace('https://', '').replace('http://', '')}
-                      </a>
-                    </div>
-                  </div>
-                )}
-                
-                <div className="flex items-start">
-                  <MapPin className="w-5 h-5 text-orange-500 mr-3 mt-0.5" />
-                  <div className="text-gray-700">
-                    {supplier.city || 'Location not specified'}
-                  </div>
-                </div>
-
-                {supplier.partnership_years && (
-                  <div className="flex items-center">
-                    <Clock className="w-5 h-5 text-orange-500 mr-3" />
-                    <div className="text-gray-700">
-                      Exporting from {supplier.partnership_years} years
-                    </div>
-                  </div>
-                )}
-                
-                <div className="pt-4 space-y-3">
-                  <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white" size="lg">
-                    Contact This Supplier
-                  </Button>
+                {/* Action Buttons */}
+                <div className="space-y-3">
+                  {supplier.email && (
+                    <Button 
+                      className="w-full bg-orange-500 hover:bg-orange-600 text-white" 
+                      size="lg"
+                      onClick={() => window.location.href = `mailto:${supplier.email}`}
+                    >
+                      <Mail className="w-4 h-4 mr-2" />
+                      Send Email
+                    </Button>
+                  )}
+                  
+                  {supplier.phone && (
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-orange-500 text-orange-500 hover:bg-orange-50" 
+                      size="lg"
+                      onClick={() => window.location.href = `tel:${supplier.phone}`}
+                    >
+                      <Phone className="w-4 h-4 mr-2" />
+                      {supplier.phone}
+                    </Button>
+                  )}
+                  
+                  {supplier.website && (
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-orange-500 text-orange-500 hover:bg-orange-50" 
+                      size="lg"
+                      onClick={() => window.open(supplier.website, '_blank')}
+                    >
+                      <Globe className="w-4 h-4 mr-2" />
+                      Visit Website
+                    </Button>
+                  )}
                   
                   {supplier.catalogue_file_url && (
                     <Button 
                       variant="outline" 
-                      className="w-full border-orange-500 text-orange-500 hover:bg-orange-50 flex items-center justify-center gap-2" 
+                      className="w-full border-orange-500 text-orange-500 hover:bg-orange-50" 
                       size="lg"
                       onClick={handleCatalogueDownload}
                     >
-                      <FileText className="w-4 h-4" />
+                      <FileText className="w-4 h-4 mr-2" />
                       Download Catalogue
                     </Button>
+                  )}
+                </div>
+
+                {/* Contact Details */}
+                <div className="pt-6 border-t border-gray-200 space-y-3">
+                  {supplier.email && (
+                    <div className="flex items-center text-sm text-gray-600">
+                      <Mail className="w-4 h-4 mr-3 text-gray-400" />
+                      <span className="break-all">{supplier.email}</span>
+                    </div>
+                  )}
+                  
+                  {supplier.phone && (
+                    <div className="flex items-center text-sm text-gray-600">
+                      <Phone className="w-4 h-4 mr-3 text-gray-400" />
+                      <span>{supplier.phone}</span>
+                    </div>
+                  )}
+                  
+                  {supplier.website && (
+                    <div className="flex items-center text-sm text-gray-600">
+                      <Globe className="w-4 h-4 mr-3 text-gray-400" />
+                      <span className="break-all">{supplier.website.replace('https://', '').replace('http://', '')}</span>
+                    </div>
+                  )}
+                  
+                  <div className="flex items-start text-sm text-gray-600">
+                    <MapPin className="w-4 h-4 mr-3 mt-0.5 text-gray-400" />
+                    <span>{supplier.city || 'Location not specified'}</span>
+                  </div>
+
+                  {supplier.partnership_years && (
+                    <div className="flex items-center text-sm text-gray-600">
+                      <Clock className="w-4 h-4 mr-3 text-gray-400" />
+                      <span>Exporting from {supplier.partnership_years} years</span>
+                    </div>
                   )}
                 </div>
               </CardContent>
