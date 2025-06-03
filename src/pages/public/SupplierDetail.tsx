@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -20,6 +19,9 @@ const SupplierDetail = () => {
   const handleCatalogueDownload = () => {
     if (supplier?.catalogue_file_url) {
       window.open(supplier.catalogue_file_url, '_blank');
+    } else {
+      // If no catalogue file, show a message or handle as needed
+      alert('Catalogue not available for download');
     }
   };
 
@@ -113,8 +115,8 @@ const SupplierDetail = () => {
                 </p>
               )}
 
-              {/* Action Buttons */}
-              <div className="flex gap-3">
+              {/* Action Buttons - Side by Side */}
+              <div className="flex flex-wrap gap-3">
                 <Button 
                   className="bg-orange-500 hover:bg-orange-600 text-white" 
                   onClick={handleContactSupplier}
@@ -123,16 +125,14 @@ const SupplierDetail = () => {
                   Contact Supplier
                 </Button>
                 
-                {supplier.catalogue_file_url && (
-                  <Button 
-                    variant="outline" 
-                    className="border-orange-200 text-orange-500 hover:bg-orange-50" 
-                    onClick={handleCatalogueDownload}
-                  >
-                    <FileText className="w-4 h-4 mr-2" />
-                    Download Catalogue
-                  </Button>
-                )}
+                <Button 
+                  variant="outline" 
+                  className="border-orange-200 text-orange-500 hover:bg-orange-50" 
+                  onClick={handleCatalogueDownload}
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  Download Catalogue
+                </Button>
               </div>
             </div>
           </div>
