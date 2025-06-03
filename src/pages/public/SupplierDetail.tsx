@@ -14,6 +14,7 @@ const SupplierDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const [isContactFormOpen, setIsContactFormOpen] = useState(false);
   const [isCatalogueFormOpen, setIsCatalogueFormOpen] = useState(false);
+  const [submittedDetails, setSubmittedDetails] = useState<any>(null);
   
   const { data: supplier, isLoading, error } = useQuery({
     queryKey: ['supplier', slug],
@@ -29,8 +30,14 @@ const SupplierDetail = () => {
     setIsCatalogueFormOpen(true);
   };
 
+  const handleCatalogueFormSubmit = (data: any) => {
+    setSubmittedDetails(data);
+    setIsCatalogueFormOpen(false);
+  };
+
   console.log('Supplier data:', supplier);
   console.log('Catalogue file URL:', supplier?.catalogue_file_url);
+  console.log('Submitted details:', submittedDetails);
 
   if (isLoading) {
     return (
@@ -83,43 +90,43 @@ const SupplierDetail = () => {
         </Link>
 
         {/* Supplier Header */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-6">
           <div className="flex flex-col lg:flex-row items-start gap-6">
-            <div className="flex items-start gap-4 flex-1">
+            <div className="flex flex-col sm:flex-row items-start gap-4 flex-1 w-full">
               {supplier.logo_url ? (
                 <img
                   src={supplier.logo_url}
                   alt={supplier.name}
-                  className="w-16 h-16 rounded-lg object-cover border border-gray-200"
+                  className="w-16 h-16 rounded-lg object-cover border border-gray-200 flex-shrink-0"
                 />
               ) : (
-                <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
+                <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200 flex-shrink-0">
                   <span className="text-gray-400 text-2xl">🏢</span>
                 </div>
               )}
               
-              <div className="flex-1">
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">{supplier.name}</h1>
+              <div className="flex-1 min-w-0">
+                <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">{supplier.name}</h1>
                 
                 {supplier.city && (
                   <div className="flex items-center text-gray-600 mb-3">
-                    <MapPin className="w-4 h-4 mr-2" />
-                    <span>{supplier.city}</span>
+                    <MapPin className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <span className="text-sm md:text-base">{supplier.city}</span>
                   </div>
                 )}
                 
                 {supplier.description && (
-                  <p className="text-gray-700 leading-relaxed">
+                  <p className="text-gray-700 leading-relaxed text-sm md:text-base">
                     {supplier.description}
                   </p>
                 )}
               </div>
             </div>
 
-            {/* Action Buttons - Positioned beside the content */}
-            <div className="flex flex-col gap-3 min-w-fit">
+            {/* Action Buttons - Responsive positioning */}
+            <div className="flex flex-row sm:flex-col gap-3 w-full sm:w-auto lg:min-w-fit">
               <Button 
-                className="bg-orange-500 hover:bg-orange-600 text-white" 
+                className="bg-orange-500 hover:bg-orange-600 text-white flex-1 sm:flex-none text-sm md:text-base" 
                 onClick={handleContactSupplier}
               >
                 <Mail className="w-4 h-4 mr-2" />
@@ -128,7 +135,7 @@ const SupplierDetail = () => {
               
               <Button 
                 variant="outline" 
-                className="border-orange-200 text-orange-500 hover:bg-orange-50" 
+                className="border-orange-200 text-orange-500 hover:bg-orange-50 flex-1 sm:flex-none text-sm md:text-base" 
                 onClick={handleCatalogueDownload}
               >
                 <FileText className="w-4 h-4 mr-2" />
@@ -137,6 +144,34 @@ const SupplierDetail = () => {
             </div>
           </div>
         </div>
+
+        {/* Submitted Details Display */}
+        {submittedDetails && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 md:p-6 mb-6">
+            <h3 className="text-lg font-semibold text-green-800 mb-4">Your Catalogue Request Details</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm font-medium text-green-700">Name:</p>
+                <p className="text-green-900">{submittedDetails.name}</p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-green-700">Email:</p>
+                <p className="text-green-900">{submittedDetails.email}</p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-green-700">Company:</p>
+                <p className="text-green-900">{submittedDetails.company || 'Not provided'}</p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-green-700">Phone:</p>
+                <p className="text-green-900">{submittedDetails.phone || 'Not provided'}</p>
+              </div>
+            </div>
+            <p className="text-sm text-green-700 mt-4">
+              The catalogue from {supplier.name} will be sent to your email address shortly.
+            </p>
+          </div>
+        )}
 
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Main Content */}
@@ -155,12 +190,12 @@ const SupplierDetail = () => {
                     {supplier.products.map((product, index) => (
                       <li key={index} className="flex items-start">
                         <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                        <span className="text-gray-700 leading-relaxed">{product}</span>
+                        <span className="text-gray-700 leading-relaxed text-sm md:text-base">{product}</span>
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-gray-500">No specific products listed.</p>
+                  <p className="text-gray-500 text-sm md:text-base">No specific products listed.</p>
                 )}
               </CardContent>
             </Card>
@@ -185,7 +220,7 @@ const SupplierDetail = () => {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500">No categories specified.</p>
+                  <p className="text-gray-500 text-sm md:text-base">No categories specified.</p>
                 )}
               </CardContent>
             </Card>
@@ -199,13 +234,13 @@ const SupplierDetail = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-700 leading-relaxed mb-4">
+                  <p className="text-gray-700 leading-relaxed mb-4 text-sm md:text-base">
                     {supplier.name} leads the industry in sustainable solutions and high-quality products. Our 
                     innovative offerings help businesses achieve their goals while maintaining excellence and 
                     integrity. We source materials from trusted suppliers and ensure a fully transparent supply 
                     chain.
                   </p>
-                  <p className="text-gray-700 leading-relaxed">
+                  <p className="text-gray-700 leading-relaxed text-sm md:text-base">
                     With over {supplier.partnership_years || 10} years of dedicated partnership, we've helped hundreds of businesses 
                     transition to better solutions without compromising on quality or efficiency. Our team of experts is 
                     always available to consult on your specific needs.
@@ -227,7 +262,7 @@ const SupplierDetail = () => {
                 <div className="space-y-3">
                   {supplier.email && (
                     <Button 
-                      className="w-full bg-orange-500 hover:bg-orange-600 text-white" 
+                      className="w-full bg-orange-500 hover:bg-orange-600 text-white text-sm md:text-base" 
                       size="lg"
                       onClick={() => window.location.href = `mailto:${supplier.email}`}
                     >
@@ -239,7 +274,7 @@ const SupplierDetail = () => {
                   {supplier.phone && (
                     <Button 
                       variant="outline" 
-                      className="w-full border-orange-200 text-orange-500 hover:bg-orange-50" 
+                      className="w-full border-orange-200 text-orange-500 hover:bg-orange-50 text-sm md:text-base" 
                       size="lg"
                       onClick={() => window.location.href = `tel:${supplier.phone}`}
                     >
@@ -251,7 +286,7 @@ const SupplierDetail = () => {
                   {supplier.website && (
                     <Button 
                       variant="outline" 
-                      className="w-full border-orange-200 text-orange-500 hover:bg-orange-50" 
+                      className="w-full border-orange-200 text-orange-500 hover:bg-orange-50 text-sm md:text-base" 
                       size="lg"
                       onClick={() => window.open(supplier.website, '_blank')}
                     >
@@ -265,21 +300,21 @@ const SupplierDetail = () => {
                 <div className="pt-4 border-t border-gray-200 space-y-3">
                   {supplier.email && (
                     <div className="flex items-center text-sm text-gray-600">
-                      <Mail className="w-4 h-4 mr-3 text-gray-400" />
+                      <Mail className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
                       <span className="break-all">{supplier.email}</span>
                     </div>
                   )}
                   
                   {supplier.phone && (
                     <div className="flex items-center text-sm text-gray-600">
-                      <Phone className="w-4 h-4 mr-3 text-gray-400" />
+                      <Phone className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
                       <span>{supplier.phone}</span>
                     </div>
                   )}
                   
                   {supplier.website && (
                     <div className="flex items-center text-sm text-gray-600">
-                      <Globe className="w-4 h-4 mr-3 text-gray-400" />
+                      <Globe className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
                       <span className="break-all">{supplier.website.replace('https://', '').replace('http://', '')}</span>
                     </div>
                   )}
@@ -295,7 +330,7 @@ const SupplierDetail = () => {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between py-2">
                   <div className="flex items-center text-sm text-gray-600">
-                    <Calendar className="w-4 h-4 mr-3 text-gray-400" />
+                    <Calendar className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
                     <span>Founded</span>
                   </div>
                   <span className="text-sm font-medium text-gray-900">2015</span>
@@ -303,7 +338,7 @@ const SupplierDetail = () => {
 
                 <div className="flex items-center justify-between py-2">
                   <div className="flex items-center text-sm text-gray-600">
-                    <Users className="w-4 h-4 mr-3 text-gray-400" />
+                    <Users className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
                     <span>Employees</span>
                   </div>
                   <span className="text-sm font-medium text-gray-900">50-100</span>
@@ -312,7 +347,7 @@ const SupplierDetail = () => {
                 {supplier.partnership_years && (
                   <div className="flex items-center justify-between py-2">
                     <div className="flex items-center text-sm text-gray-600">
-                      <Clock className="w-4 h-4 mr-3 text-gray-400" />
+                      <Clock className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
                       <span>Partnership</span>
                     </div>
                     <span className="text-sm font-medium text-gray-900">{supplier.partnership_years} years</span>
@@ -321,7 +356,7 @@ const SupplierDetail = () => {
 
                 <div className="flex items-center justify-between py-2">
                   <div className="flex items-center text-sm text-gray-600">
-                    <MapPin className="w-4 h-4 mr-3 text-gray-400" />
+                    <MapPin className="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" />
                     <span>Location</span>
                   </div>
                   <span className="text-sm font-medium text-gray-900">{supplier.city || 'Not specified'}</span>
@@ -331,7 +366,7 @@ const SupplierDetail = () => {
                   <div className="pt-4 border-t border-gray-200">
                     <Button 
                       variant="outline" 
-                      className="w-full border-orange-200 text-orange-500 hover:bg-orange-50" 
+                      className="w-full border-orange-200 text-orange-500 hover:bg-orange-50 text-sm md:text-base" 
                       onClick={handleCatalogueDownload}
                     >
                       <FileText className="w-4 h-4 mr-2" />
@@ -405,6 +440,7 @@ const SupplierDetail = () => {
         isOpen={isCatalogueFormOpen}
         onClose={() => setIsCatalogueFormOpen(false)}
         supplierName={supplier?.name || ''}
+        onSubmit={handleCatalogueFormSubmit}
       />
     </div>
   );

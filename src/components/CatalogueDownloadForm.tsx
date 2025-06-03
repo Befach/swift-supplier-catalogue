@@ -18,9 +18,10 @@ interface CatalogueDownloadFormProps {
   isOpen: boolean;
   onClose: () => void;
   supplierName: string;
+  onSubmit?: (data: CatalogueFormData) => void;
 }
 
-export const CatalogueDownloadForm = ({ isOpen, onClose, supplierName }: CatalogueDownloadFormProps) => {
+export const CatalogueDownloadForm = ({ isOpen, onClose, supplierName, onSubmit }: CatalogueDownloadFormProps) => {
   const form = useForm<CatalogueFormData>({
     defaultValues: {
       name: '',
@@ -30,12 +31,18 @@ export const CatalogueDownloadForm = ({ isOpen, onClose, supplierName }: Catalog
     },
   });
 
-  const onSubmit = (data: CatalogueFormData) => {
+  const handleSubmit = (data: CatalogueFormData) => {
     console.log('Catalogue download form submitted:', data);
     toast({
       title: "Catalogue Access Granted!",
       description: `The catalogue from ${supplierName} has been sent to your email address.`,
     });
+    
+    // Call the onSubmit prop if provided
+    if (onSubmit) {
+      onSubmit(data);
+    }
+    
     form.reset();
     onClose();
   };
@@ -47,7 +54,7 @@ export const CatalogueDownloadForm = ({ isOpen, onClose, supplierName }: Catalog
           <DialogTitle>Download Catalogue from {supplierName}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="name"
