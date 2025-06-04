@@ -10,8 +10,8 @@ import { Textarea } from '@/components/ui/textarea';
 interface ContactFormData {
   name: string;
   email: string;
-  company: string;
-  phone: string;
+  company?: string;
+  phone?: string;
   message: string;
 }
 
@@ -59,7 +59,7 @@ export const ContactSupplierForm = ({ isOpen, onClose, supplierName, onSubmit }:
               rules={{ required: "Name is required" }}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Full Name</FormLabel>
+                  <FormLabel>Full Name *</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter your full name" {...field} />
                   </FormControl>
@@ -75,12 +75,12 @@ export const ContactSupplierForm = ({ isOpen, onClose, supplierName, onSubmit }:
                 required: "Email is required",
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address"
+                  message: "Please enter a valid email address"
                 }
               }}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Email *</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter your email" {...field} />
                   </FormControl>
@@ -96,21 +96,7 @@ export const ContactSupplierForm = ({ isOpen, onClose, supplierName, onSubmit }:
                 <FormItem>
                   <FormLabel>Company</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your company name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter your phone number" {...field} />
+                    <Input placeholder="Enter your company name (optional)" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -123,11 +109,11 @@ export const ContactSupplierForm = ({ isOpen, onClose, supplierName, onSubmit }:
               rules={{ required: "Message is required" }}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Message</FormLabel>
+                  <FormLabel>Message *</FormLabel>
                   <FormControl>
                     <Textarea 
-                      placeholder="Enter your message or inquiry"
-                      rows={4}
+                      placeholder="Tell the supplier about your inquiry"
+                      rows={3}
                       {...field} 
                     />
                   </FormControl>

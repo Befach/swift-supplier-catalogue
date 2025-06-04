@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ContactSupplierForm } from '@/components/ContactSupplierForm';
 import { CatalogueDownloadForm } from '@/components/CatalogueDownloadForm';
-import { ContactGateModal } from '@/components/ContactGateModal';
 import { db } from '@/lib/firebase';
 import { MapPin, Clock, Mail, Phone, Globe, FileText, ArrowLeft, Package, Building, Users, Calendar, Lock, X } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
@@ -15,7 +14,6 @@ const SupplierDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const [isContactFormOpen, setIsContactFormOpen] = useState(false);
   const [isCatalogueFormOpen, setIsCatalogueFormOpen] = useState(false);
-  const [isContactGateOpen, setIsContactGateOpen] = useState(false);
   const [hasContactedSupplier, setHasContactedSupplier] = useState(false);
   const [contactFormData, setContactFormData] = useState<any>(null);
   const [catalogueDetails, setCatalogueDetails] = useState<any>(null);
@@ -47,23 +45,6 @@ const SupplierDetail = () => {
         formData
       }));
     }
-  };
-
-  const handleContactButtonClick = () => {
-    if (!hasContactedSupplier) {
-      setIsContactGateOpen(true);
-    } else {
-      setIsContactFormOpen(true);
-    }
-  };
-
-  const handleContactGateClose = () => {
-    setIsContactGateOpen(false);
-  };
-
-  const handleProceedToContact = () => {
-    setIsContactGateOpen(false);
-    setIsContactFormOpen(true);
   };
 
   const handleContactFormSubmit = (data: any) => {
@@ -251,10 +232,10 @@ const SupplierDetail = () => {
             <div className="flex flex-row sm:flex-col gap-3 w-full sm:w-auto lg:min-w-fit">
               <Button 
                 className="bg-orange-500 hover:bg-orange-600 text-white flex-1 sm:flex-none text-sm md:text-base" 
-                onClick={handleContactButtonClick}
+                onClick={() => setIsContactFormOpen(true)}
               >
                 <Mail className="w-4 h-4 mr-2" />
-                {hasContactedSupplier ? 'Contact Again' : 'Contact Supplier'}
+                Contact Supplier
               </Button>
               
               <Button 
@@ -272,7 +253,7 @@ const SupplierDetail = () => {
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Products & Services - Always visible */}
+            {/* Products & Services */}
             <Card className="bg-white shadow-sm border border-gray-200">
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
@@ -296,7 +277,7 @@ const SupplierDetail = () => {
               </CardContent>
             </Card>
 
-            {/* Industry Categories - Always visible */}
+            {/* Industry Categories */}
             <Card className="bg-white shadow-sm border border-gray-200">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-semibold text-gray-900">
@@ -321,7 +302,7 @@ const SupplierDetail = () => {
               </CardContent>
             </Card>
 
-            {/* Additional Description - Always visible */}
+            {/* Additional Description */}
             <Card className="bg-white shadow-sm border border-gray-200">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-semibold text-gray-900">
@@ -346,8 +327,8 @@ const SupplierDetail = () => {
 
           {/* Contact Sidebar */}
           <div className="space-y-6">
-            {/* Contact Information - Only this is gated */}
-            <Card className={`bg-white shadow-sm border border-gray-200 transition-all duration-500 ${!hasContactedSupplier ? 'opacity-50' : 'animate-fade-in'}`}>
+            {/* Contact Information - Gated behind contact form */}
+            <Card className={`bg-white shadow-sm border border-gray-200 transition-all duration-500 ${!hasContactedSupplier ? 'opacity-75' : 'animate-fade-in'}`}>
               <CardHeader>
                 <CardTitle className="text-lg font-semibold text-gray-900 flex items-center">
                   Contact Information
@@ -358,9 +339,10 @@ const SupplierDetail = () => {
                 {!hasContactedSupplier ? (
                   <div className="text-center py-8">
                     <Lock className="w-12 h-12 mx-auto text-gray-300 mb-4" />
-                    <p className="text-gray-500 text-sm mb-4">Fill contact form to access supplier contact details</p>
-                    <Button onClick={handleContactButtonClick} size="sm" className="bg-orange-500 hover:bg-orange-600">
-                      Contact to View
+                    <p className="text-gray-500 text-sm mb-4">Contact the supplier to view their contact details</p>
+                    <Button onClick={() => setIsContactFormOpen(true)} size="sm" className="bg-orange-500 hover:bg-orange-600">
+                      <Mail className="w-4 h-4 mr-2" />
+                      Contact Supplier
                     </Button>
                   </div>
                 ) : (
@@ -536,14 +518,6 @@ const SupplierDetail = () => {
           </div>
         </footer>
       </div>
-
-      {/* Contact Gate Modal */}
-      <ContactGateModal
-        isOpen={isContactGateOpen}
-        onClose={handleContactGateClose}
-        onProceed={handleProceedToContact}
-        supplierName={supplier?.name || ''}
-      />
 
       {/* Contact Form Modal */}
       <ContactSupplierForm 
