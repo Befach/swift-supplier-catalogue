@@ -1,4 +1,3 @@
-
 import React, { useCallback, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -108,6 +107,7 @@ export const CSVUploader: React.FC<CSVUploaderProps> = ({ onUpload }) => {
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragOver(false);
 
     const files = Array.from(e.dataTransfer.files);
@@ -135,11 +135,29 @@ export const CSVUploader: React.FC<CSVUploaderProps> = ({ onUpload }) => {
   }, [handleFileRead]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation();
     const file = e.target.files?.[0];
     if (file) {
       handleFileRead(file);
     }
+    // Reset the input value to allow selecting the same file again
+    e.target.value = '';
   };
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Only set dragOver to false if we're leaving the drop zone completely
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+      setIsDragOver(false);
+    }
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -148,13 +166,11 @@ export const CSVUploader: React.FC<CSVUploaderProps> = ({ onUpload }) => {
           isDragOver ? 'border-blue-400 bg-blue-50' : 'border-gray-300'
         }`}
         onDrop={handleDrop}
-        onDragOver={(e) => {
-          e.preventDefault();
-          setIsDragOver(true);
-        }}
-        onDragLeave={() => setIsDragOver(false)}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDragEnter={(e) => e.preventDefault()}
       >
-        <CardContent className="p-8 text-center">
+        <CardContent className="p-4 sm:p-8 text-center">
           <div className="space-y-4">
             <div className="mx-auto w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
               <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -163,7 +179,7 @@ export const CSVUploader: React.FC<CSVUploaderProps> = ({ onUpload }) => {
             </div>
             
             <div>
-              <p className="text-lg font-medium text-gray-900">
+              <p className="text-base sm:text-lg font-medium text-gray-900">
                 Drop your CSV file here, or click to browse
               </p>
               <p className="text-sm text-gray-500 mt-1">
@@ -171,16 +187,19 @@ export const CSVUploader: React.FC<CSVUploaderProps> = ({ onUpload }) => {
               </p>
             </div>
             
-            <Button variant="outline" disabled={isProcessing}>
-              <input
-                type="file"
-                accept=".csv"
-                onChange={handleFileSelect}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                disabled={isProcessing}
-              />
-              {isProcessing ? 'Processing...' : 'Choose File'}
-            </Button>
+            <div className="relative">
+              <Button variant="outline" disabled={isProcessing} className="relative overflow-hidden">
+                <input
+                  type="file"
+                  accept=".csv"
+                  onChange={handleFileSelect}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                  disabled={isProcessing}
+                  onClick={(e) => e.stopPropagation()}
+                />
+                {isProcessing ? 'Processing...' : 'Choose File'}
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
