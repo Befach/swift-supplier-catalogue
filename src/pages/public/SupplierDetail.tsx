@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -308,7 +307,6 @@ const SupplierDetail = () => {
         isOpen={isCatalogueFormOpen}
         onClose={() => setIsCatalogueFormOpen(false)}
         supplierName={supplier.name}
-        catalogueUrl={supplier.catalogue_file_url}
         onSubmit={handleCatalogueDownload}
       />
     </div>
